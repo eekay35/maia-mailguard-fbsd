@@ -1,0 +1,11 @@
+--- cfg_tpl/maia.conf.tmpl.orig	2025-09-22 17:56:11 UTC
++++ cfg_tpl/maia.conf.tmpl
+@@ -46,7 +46,7 @@ $preserve_case = 0;
+ # The directory where SpamAssassin's local.cf file can be found.
+ #$local_cf_dir = '/etc/mail/spamassassin';
+ #$local_cf_dir = '/etc/spamassassin';
+-$local_cf_dir = undef;  # default: let the script find it
++$local_cf_dir = '/var/db/spamassassin';  # default: let the script find it
+ 
+ # The directory where SpamAssassin's core rules can be found.
+ # If you wish to specify the directory yourself, you can use the 

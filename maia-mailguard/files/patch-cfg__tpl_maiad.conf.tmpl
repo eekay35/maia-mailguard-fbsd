@@ -1,0 +1,31 @@
+--- cfg_tpl/maiad.conf.tmpl.orig	2025-09-22 18:00:05 UTC
++++ cfg_tpl/maiad.conf.tmpl
+@@ -55,8 +55,8 @@ $daemon_chroot_dir = undef;
+ # Path overrides for chrooted environments
+ #   * Uncomment and adjust as necessary if using chroot
+ 
+-# $lock_file = "$daemon_chroot_dir/var/lock/maia/maiad.lock";
+-# $pid_file = "$daemon_chroot_dir/var/run/maia/maiad.pid";
++$lock_file = "/var/run/maia/maiad.lock";
++$pid_file = "/var/run/maia/maiad.pid";
+ 
+ 
+ ###########################################################################
+@@ -243,7 +243,7 @@ $unarj       = ['arj', 'unarj'];
+ $unfreeze    = ['unfreeze', 'freeze -d', 'melt', 'fcat'];
+ $arc         = ['nomarch', 'arc'];
+ $unarj       = ['arj', 'unarj'];
+-#$unrar      = ['rar', 'unrar'];
++$unrar       = ['rar', 'unrar v -c- -p- --'];
+ $zoo         = 'zoo';
+ $lha         = 'lha';
+ $cpio        = ['gcpio','cpio'];
+@@ -390,7 +390,7 @@ $banned_filename_re = new_RE(
+ 
+ # Clam Antivirus Daemon (clamd)
+ ['ClamAV-clamd',
+-   \&ask_daemon, ["CONTSCAN {}\n", "/run/clamav/clamd.ctl"],
++   \&ask_daemon, ["CONTSCAN {}\n", "/var/run/clamav/clamd.sock"],
+ #   \&ask_daemon, ["CONTSCAN {}\n", "localhost:3310"],
+    qr/\bOK$/m, qr/\bFOUND$/m,
+    qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
