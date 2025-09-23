@@ -318,8 +318,8 @@ post-patch:
 		-e "s|/var/lib/maia|${DATADIR}|" \
 		${WRKSRC}/files/maiad
 
-	@${FIND} -E ${WRKSRC} -iregex '.*(bak|~)$$' -delete
-	@${FIND} -E ${WRKSRC} -iregex '.*(gitkeep|~)$$' -delete
+	@${FIND} -E ${WRKSRC} \( -iregex '.*(bak|~)$$' -o -iregex '.*(git|~)$$' \
+		-o -iregex '.*(orig|~)$$' \) -delete
 
 do-install:
 	${MKDIR} ${STAGEDIR}${WWWDIR} ${STAGEDIR}${WWWDIR}/web
@@ -334,7 +334,7 @@ do-install:
 .for a in digest.tpl newuser.tpl reminder.tpl
 	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a}.dist ${STAGEDIR}${ETCDIR}/templates
 .endfor
-	${INSTALL_SCRIPT} ${WRKSRC}/maiad ${STAGEDIR}${PREFIX}/sbin
+	${INSTALL_SCRIPT} ${WRKSRC}/files/maiad ${STAGEDIR}${PREFIX}/sbin
 	${INSTALL} -m 640 ${WRKSRC}/cfg_tpl/maiad.conf.tmpl ${STAGEDIR}${ETCDIR}/maiad.conf.dist
 	${INSTALL} -m 640 ${WRKSRC}/cfg_tpl/maia.conf.tmpl ${STAGEDIR}${ETCDIR}/maia.conf.dist
 

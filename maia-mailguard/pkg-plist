@@ -1,34 +1,39 @@
 @group %%GROUPS%%
-@sample %%ETCDIR%%/maia.conf.dist %%ETCDIR%%/maia.conf
-@sample %%ETCDIR%%/maiad.conf.dist %%ETCDIR%%/maiad.conf
+%%ETCDIR%%/maia.conf.dist
+%%ETCDIR%%/maiad.conf.dist
 @group
 @sample %%ETCDIR%%/templates/digest.tpl.dist %%ETCDIR%%/templates/digest.tpl
 @sample %%ETCDIR%%/templates/newuser.tpl.dist %%ETCDIR%%/templates/newuser.tpl
 @sample %%ETCDIR%%/templates/reminder.tpl.dist %%ETCDIR%%/templates/reminder.tpl
+etc/rc.d/maiad
 sbin/maiad
 %%PORTDOCS%%%%DOCSDIR%%/LICENSE.txt
 %%PORTDOCS%%%%DOCSDIR%%/README.md
 %%PORTDOCS%%%%DOCSDIR%%/maia-mysql.sql
 %%PORTDOCS%%%%DOCSDIR%%/maia-pgsql.sql
-%%PORTDOCS%%%%DOCSDIR%%/maia.conf.dist
-%%PORTDOCS%%%%DOCSDIR%%/maiad.conf.dist
 @mode 755
 %%DATADIR%%/scripts/configtest.pl
 %%DATADIR%%/scripts/detectvba.pl
 %%DATADIR%%/scripts/expire-quarantine-cache.pl
+%%DATADIR%%/scripts/get-info.sh
+%%DATADIR%%/scripts/grants-sans-pw
+%%DATADIR%%/scripts/grants-with-pw
+%%DATADIR%%/scripts/inline-edit.sh
 %%DATADIR%%/scripts/load-sa-rules.pl
+%%DATADIR%%/scripts/maia-grants.sh
 %%DATADIR%%/scripts/maiadbtool.pl
+%%DATADIR%%/scripts/postfix-setup.sh
+%%DATADIR%%/scripts/process-changes.sh
 %%DATADIR%%/scripts/process-quarantine.pl
 %%DATADIR%%/scripts/resend.pl
 %%DATADIR%%/scripts/send-quarantine-digests.pl
 %%DATADIR%%/scripts/send-quarantine-reminders.pl
 %%DATADIR%%/scripts/stats-snapshot.pl
 @mode
-@owner %%WWWOWN%%
 @group %%WWWGRP%%
+@owner %%WWWOWN%%
 %%WWWDIR%%/admin/configtest.php
 %%WWWDIR%%/admin/dblib.php
-%%WWWDIR%%/admin/internal-init.php
 %%WWWDIR%%/admin/schema.php
 %%WWWDIR%%/admindex.php
 %%WWWDIR%%/admindomains.php
@@ -72,7 +77,8 @@ sbin/maiad
 %%WWWDIR%%/images/view-raw.png
 %%WWWDIR%%/images/white-black-list.png
 %%WWWDIR%%/index.php
-%%WEBHOST%%%%WWWDIR%%/libs/Smarty
+%%WWWDIR%%/internal-init.php
+%%WWWDIR%%/libs/Smarty
 %%WWWDIR%%/libs/jquery/images/arrowdown.gif
 %%WWWDIR%%/libs/jquery/images/arrowleft.gif
 %%WWWDIR%%/libs/jquery/images/arrowright.gif
@@ -929,52 +935,49 @@ sbin/maiad
 %%WWWDIR%%/xlogin.php
 %%WWWDIR%%/xsettings.php
 @dir %%WWWDIR%%/web
-@dir %%WWWDIR%%/themes/ocean_surf/templates/settings
-@dir %%WWWDIR%%/themes/ocean_surf/templates
-@dir %%WWWDIR%%/themes/ocean_surf/javascript
-@dir %%WWWDIR%%/themes/ocean_surf/images
-@dir %%WWWDIR%%/themes/ocean_surf/css/images
-@dir %%WWWDIR%%/themes/ocean_surf/css
-@dir %%WWWDIR%%/themes/ocean_surf/compiled
-@dir %%WWWDIR%%/themes/ocean_surf/code
+@dir %%WWWDIR%%/admin
+@dir %%WWWDIR%%/themes
 @dir %%WWWDIR%%/themes/ocean_surf
-@dir %%WWWDIR%%/themes/dgm/templates
-@dir %%WWWDIR%%/themes/dgm/images
-@dir %%WWWDIR%%/themes/dgm/css
-@dir %%WWWDIR%%/themes/dgm/compiled
-@dir %%WWWDIR%%/themes/dgm/code
-@dir %%WWWDIR%%/themes/dgm
+@dir %%WWWDIR%%/themes/ocean_surf/images
+@dir %%WWWDIR%%/themes/ocean_surf/templates
+@dir %%WWWDIR%%/themes/ocean_surf/templates/settings
+@dir %%WWWDIR%%/themes/ocean_surf/css
+@dir %%WWWDIR%%/themes/ocean_surf/css/images
+@dir %%WWWDIR%%/themes/ocean_surf/javascript
+@dir %%WWWDIR%%/themes/ocean_surf/code
+@dir %%WWWDIR%%/themes/desert_sand
+@dir %%WWWDIR%%/themes/desert_sand/images
+@dir %%WWWDIR%%/themes/desert_sand/css
+@dir %%WWWDIR%%/themes/desert_sand/css/images
+@dir %%WWWDIR%%/themes/desert_sand/javascript
+@dir %%WWWDIR%%/themes/desert_sand/templates
 @dir %%WWWDIR%%/themes/desert_sand/templates/welcome
 @dir %%WWWDIR%%/themes/desert_sand/templates/settings
-@dir %%WWWDIR%%/themes/desert_sand/templates
-@dir %%WWWDIR%%/themes/desert_sand/javascript
-@dir %%WWWDIR%%/themes/desert_sand/images
-@dir %%WWWDIR%%/themes/desert_sand/css/images
-@dir %%WWWDIR%%/themes/desert_sand/css
-@dir %%WWWDIR%%/themes/desert_sand/compiled
 @dir %%WWWDIR%%/themes/desert_sand/code
-@dir %%WWWDIR%%/themes/desert_sand
-@dir %%WWWDIR%%/themes
-@dir %%WWWDIR%%/overlib/mini
-@dir %%WWWDIR%%/overlib
-@dir %%WWWDIR%%/maia_db
-@dir %%WWWDIR%%/locale/sv
-@dir %%WWWDIR%%/locale/ru
-@dir %%WWWDIR%%/locale/pt
-@dir %%WWWDIR%%/locale/no
+@dir %%WWWDIR%%/themes/dgm
+@dir %%WWWDIR%%/themes/dgm/code
+@dir %%WWWDIR%%/themes/dgm/images
+@dir %%WWWDIR%%/themes/dgm/templates
+@dir %%WWWDIR%%/themes/dgm/css
+@dir %%WWWDIR%%/locale
 @dir %%WWWDIR%%/locale/nl
-@dir %%WWWDIR%%/locale/it
-@dir %%WWWDIR%%/locale/hu
-@dir %%WWWDIR%%/locale/fr
 @dir %%WWWDIR%%/locale/en
-@dir %%WWWDIR%%/locale/de
-@dir %%WWWDIR%%/locale/da
+@dir %%WWWDIR%%/locale/fr
 @dir %%WWWDIR%%/locale/cs
-@dir %%WWWDIR%%/libs/jquery/images
-@dir %%WWWDIR%%/libs/jquery
+@dir %%WWWDIR%%/locale/no
+@dir %%WWWDIR%%/locale/hu
+@dir %%WWWDIR%%/locale/da
+@dir %%WWWDIR%%/locale/it
+@dir %%WWWDIR%%/locale/ru
+@dir %%WWWDIR%%/locale/sv
+@dir %%WWWDIR%%/locale/pt
+@dir %%WWWDIR%%/locale/ja
+@dir %%WWWDIR%%/locale/de
 @dir %%WWWDIR%%/libs
+@dir %%WWWDIR%%/libs/jquery
+@dir %%WWWDIR%%/libs/jquery/images
+@dir %%WWWDIR%%/web
 @dir %%WWWDIR%%/images
-@dir %%WWWDIR%%/admin
-@dir %%WWWDIR%%
-@owner
-@group
+@dir %%WWWDIR%%/overlib
+@dir %%WWWDIR%%/overlib/mini
+@dir %%WWWDIR%%/maia_db

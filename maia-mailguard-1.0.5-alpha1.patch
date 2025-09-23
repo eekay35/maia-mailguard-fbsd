@@ -1,5 +1,5 @@
 diff --git a/security/Makefile b/security/Makefile
-index 9446ec4e5837..be2b1e78042e 100644
+index 9446ec4e5..be2b1e780 100644
 --- a/security/Makefile
 +++ b/security/Makefile
 @@ -377,6 +377,7 @@
@@ -12,7 +12,7 @@ index 9446ec4e5837..be2b1e78042e 100644
      SUBDIR += maltrail
 diff --git a/security/maia-mailguard/Makefile b/security/maia-mailguard/Makefile
 new file mode 100644
-index 000000000000..ef9aa897e596
+index 000000000..3d4b3f0e2
 --- /dev/null
 +++ b/security/maia-mailguard/Makefile
 @@ -0,0 +1,347 @@
@@ -336,8 +336,8 @@ index 000000000000..ef9aa897e596
 +		-e "s|/var/lib/maia|${DATADIR}|" \
 +		${WRKSRC}/files/maiad
 +
-+	@${FIND} -E ${WRKSRC} -iregex '.*(bak|~)$$' -delete
-+	@${FIND} -E ${WRKSRC} -iregex '.*(gitkeep|~)$$' -delete
++	@${FIND} -E ${WRKSRC} \( -iregex '.*(bak|~)$$' -o -iregex '.*(git|~)$$' \
++		-o -iregex '.*(orig|~)$$' \) -delete
 +
 +do-install:
 +	${MKDIR} ${STAGEDIR}${WWWDIR} ${STAGEDIR}${WWWDIR}/web
@@ -352,7 +352,7 @@ index 000000000000..ef9aa897e596
 +.for a in digest.tpl newuser.tpl reminder.tpl
 +	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a}.dist ${STAGEDIR}${ETCDIR}/templates
 +.endfor
-+	${INSTALL_SCRIPT} ${WRKSRC}/maiad ${STAGEDIR}${PREFIX}/sbin
++	${INSTALL_SCRIPT} ${WRKSRC}/files/maiad ${STAGEDIR}${PREFIX}/sbin
 +	${INSTALL} -m 640 ${WRKSRC}/cfg_tpl/maiad.conf.tmpl ${STAGEDIR}${ETCDIR}/maiad.conf.dist
 +	${INSTALL} -m 640 ${WRKSRC}/cfg_tpl/maia.conf.tmpl ${STAGEDIR}${ETCDIR}/maia.conf.dist
 +
@@ -365,7 +365,7 @@ index 000000000000..ef9aa897e596
 +.include <bsd.port.post.mk>
 diff --git a/security/maia-mailguard/distinfo b/security/maia-mailguard/distinfo
 new file mode 100644
-index 000000000000..ae34c137200a
+index 000000000..ae34c1372
 --- /dev/null
 +++ b/security/maia-mailguard/distinfo
 @@ -0,0 +1,3 @@
@@ -374,7 +374,7 @@ index 000000000000..ae34c137200a
 +SIZE (einheit-maia_mailguard_1.05-1.0.5-alpha1_GH0.tar.gz) = 13047895
 diff --git a/security/maia-mailguard/files/maiad.in b/security/maia-mailguard/files/maiad.in
 new file mode 100644
-index 000000000000..6b998b0d1156
+index 000000000..6b998b0d1
 --- /dev/null
 +++ b/security/maia-mailguard/files/maiad.in
 @@ -0,0 +1,49 @@
@@ -429,7 +429,7 @@ index 000000000000..6b998b0d1156
 +
 diff --git a/security/maia-mailguard/files/patch-cfg__tpl_maia.conf.tmpl b/security/maia-mailguard/files/patch-cfg__tpl_maia.conf.tmpl
 new file mode 100644
-index 000000000000..feca83f30987
+index 000000000..feca83f30
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-cfg__tpl_maia.conf.tmpl
 @@ -0,0 +1,11 @@
@@ -446,7 +446,7 @@ index 000000000000..feca83f30987
 + # If you wish to specify the directory yourself, you can use the 
 diff --git a/security/maia-mailguard/files/patch-cfg__tpl_maiad.conf.tmpl b/security/maia-mailguard/files/patch-cfg__tpl_maiad.conf.tmpl
 new file mode 100644
-index 000000000000..f32166c7e853
+index 000000000..f32166c7e
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-cfg__tpl_maiad.conf.tmpl
 @@ -0,0 +1,31 @@
@@ -483,7 +483,7 @@ index 000000000000..f32166c7e853
 +    qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
 diff --git a/security/maia-mailguard/files/patch-files_maiad b/security/maia-mailguard/files/patch-files_maiad
 new file mode 100644
-index 000000000000..13d7f9e87e45
+index 000000000..13d7f9e87
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-files_maiad
 @@ -0,0 +1,8 @@
@@ -497,7 +497,7 @@ index 000000000000..13d7f9e87e45
 + # include support for Maia Mailguard.  Maia Mailguard is a set of PHP and
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_configtest.pl b/security/maia-mailguard/files/patch-maia__scripts_configtest.pl
 new file mode 100644
-index 000000000000..d91c7ad4140e
+index 000000000..d91c7ad41
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_configtest.pl
 @@ -0,0 +1,8 @@
@@ -511,7 +511,7 @@ index 000000000000..d91c7ad4140e
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_detectvba.pl b/security/maia-mailguard/files/patch-maia__scripts_detectvba.pl
 new file mode 100644
-index 000000000000..4c39a2b5fb91
+index 000000000..4c39a2b5f
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_detectvba.pl
 @@ -0,0 +1,8 @@
@@ -525,7 +525,7 @@ index 000000000000..4c39a2b5fb91
 + #
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_expire-quarantine-cache.pl b/security/maia-mailguard/files/patch-maia__scripts_expire-quarantine-cache.pl
 new file mode 100644
-index 000000000000..d961be6ea8e4
+index 000000000..d961be6ea
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_expire-quarantine-cache.pl
 @@ -0,0 +1,8 @@
@@ -539,7 +539,7 @@ index 000000000000..d961be6ea8e4
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_load-sa-rules.pl b/security/maia-mailguard/files/patch-maia__scripts_load-sa-rules.pl
 new file mode 100644
-index 000000000000..5d0c667942cb
+index 000000000..5d0c66794
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_load-sa-rules.pl
 @@ -0,0 +1,8 @@
@@ -553,7 +553,7 @@ index 000000000000..5d0c667942cb
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_maiadbtool.pl b/security/maia-mailguard/files/patch-maia__scripts_maiadbtool.pl
 new file mode 100644
-index 000000000000..252895372471
+index 000000000..252895372
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_maiadbtool.pl
 @@ -0,0 +1,8 @@
@@ -567,7 +567,7 @@ index 000000000000..252895372471
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_process-quarantine.pl b/security/maia-mailguard/files/patch-maia__scripts_process-quarantine.pl
 new file mode 100644
-index 000000000000..19c5a3f5332a
+index 000000000..19c5a3f53
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_process-quarantine.pl
 @@ -0,0 +1,8 @@
@@ -581,7 +581,7 @@ index 000000000000..19c5a3f5332a
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_resend.pl b/security/maia-mailguard/files/patch-maia__scripts_resend.pl
 new file mode 100644
-index 000000000000..72868030be71
+index 000000000..72868030b
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_resend.pl
 @@ -0,0 +1,8 @@
@@ -595,7 +595,7 @@ index 000000000000..72868030be71
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-digests.pl b/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-digests.pl
 new file mode 100644
-index 000000000000..a5ad1e453590
+index 000000000..a5ad1e453
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-digests.pl
 @@ -0,0 +1,8 @@
@@ -609,7 +609,7 @@ index 000000000000..a5ad1e453590
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-reminders.pl b/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-reminders.pl
 new file mode 100644
-index 000000000000..731cd01a5f48
+index 000000000..731cd01a5
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-reminders.pl
 @@ -0,0 +1,8 @@
@@ -623,7 +623,7 @@ index 000000000000..731cd01a5f48
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_stats-snapshot.pl b/security/maia-mailguard/files/patch-maia__scripts_stats-snapshot.pl
 new file mode 100644
-index 000000000000..43c37c830c92
+index 000000000..43c37c830
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_stats-snapshot.pl
 @@ -0,0 +1,8 @@
@@ -637,7 +637,7 @@ index 000000000000..43c37c830c92
 + 
 diff --git a/security/maia-mailguard/files/pkg-message.in b/security/maia-mailguard/files/pkg-message.in
 new file mode 100644
-index 000000000000..6fd7689896ec
+index 000000000..6fd768989
 --- /dev/null
 +++ b/security/maia-mailguard/files/pkg-message.in
 @@ -0,0 +1,25 @@
@@ -668,7 +668,7 @@ index 000000000000..6fd7689896ec
 +]
 diff --git a/security/maia-mailguard/pkg-descr b/security/maia-mailguard/pkg-descr
 new file mode 100644
-index 000000000000..92cb5feff13e
+index 000000000..92cb5feff
 --- /dev/null
 +++ b/security/maia-mailguard/pkg-descr
 @@ -0,0 +1,5 @@
@@ -679,41 +679,46 @@ index 000000000000..92cb5feff13e
 +to configure site-wide defaults and limits.
 diff --git a/security/maia-mailguard/pkg-plist b/security/maia-mailguard/pkg-plist
 new file mode 100644
-index 000000000000..a349917f4709
+index 000000000..d961c39a7
 --- /dev/null
 +++ b/security/maia-mailguard/pkg-plist
-@@ -0,0 +1,980 @@
+@@ -0,0 +1,983 @@
 +@group %%GROUPS%%
-+@sample %%ETCDIR%%/maia.conf.dist %%ETCDIR%%/maia.conf
-+@sample %%ETCDIR%%/maiad.conf.dist %%ETCDIR%%/maiad.conf
++%%ETCDIR%%/maia.conf.dist
++%%ETCDIR%%/maiad.conf.dist
 +@group
 +@sample %%ETCDIR%%/templates/digest.tpl.dist %%ETCDIR%%/templates/digest.tpl
 +@sample %%ETCDIR%%/templates/newuser.tpl.dist %%ETCDIR%%/templates/newuser.tpl
 +@sample %%ETCDIR%%/templates/reminder.tpl.dist %%ETCDIR%%/templates/reminder.tpl
++etc/rc.d/maiad
 +sbin/maiad
 +%%PORTDOCS%%%%DOCSDIR%%/LICENSE.txt
 +%%PORTDOCS%%%%DOCSDIR%%/README.md
 +%%PORTDOCS%%%%DOCSDIR%%/maia-mysql.sql
 +%%PORTDOCS%%%%DOCSDIR%%/maia-pgsql.sql
-+%%PORTDOCS%%%%DOCSDIR%%/maia.conf.dist
-+%%PORTDOCS%%%%DOCSDIR%%/maiad.conf.dist
 +@mode 755
 +%%DATADIR%%/scripts/configtest.pl
 +%%DATADIR%%/scripts/detectvba.pl
 +%%DATADIR%%/scripts/expire-quarantine-cache.pl
++%%DATADIR%%/scripts/get-info.sh
++%%DATADIR%%/scripts/grants-sans-pw
++%%DATADIR%%/scripts/grants-with-pw
++%%DATADIR%%/scripts/inline-edit.sh
 +%%DATADIR%%/scripts/load-sa-rules.pl
++%%DATADIR%%/scripts/maia-grants.sh
 +%%DATADIR%%/scripts/maiadbtool.pl
++%%DATADIR%%/scripts/postfix-setup.sh
++%%DATADIR%%/scripts/process-changes.sh
 +%%DATADIR%%/scripts/process-quarantine.pl
 +%%DATADIR%%/scripts/resend.pl
 +%%DATADIR%%/scripts/send-quarantine-digests.pl
 +%%DATADIR%%/scripts/send-quarantine-reminders.pl
 +%%DATADIR%%/scripts/stats-snapshot.pl
 +@mode
-+@owner %%WWWOWN%%
 +@group %%WWWGRP%%
++@owner %%WWWOWN%%
 +%%WWWDIR%%/admin/configtest.php
 +%%WWWDIR%%/admin/dblib.php
-+%%WWWDIR%%/admin/internal-init.php
 +%%WWWDIR%%/admin/schema.php
 +%%WWWDIR%%/admindex.php
 +%%WWWDIR%%/admindomains.php
@@ -757,7 +762,8 @@ index 000000000000..a349917f4709
 +%%WWWDIR%%/images/view-raw.png
 +%%WWWDIR%%/images/white-black-list.png
 +%%WWWDIR%%/index.php
-+%%WEBHOST%%%%WWWDIR%%/libs/Smarty
++%%WWWDIR%%/internal-init.php
++%%WWWDIR%%/libs/Smarty
 +%%WWWDIR%%/libs/jquery/images/arrowdown.gif
 +%%WWWDIR%%/libs/jquery/images/arrowleft.gif
 +%%WWWDIR%%/libs/jquery/images/arrowright.gif
@@ -1614,52 +1620,49 @@ index 000000000000..a349917f4709
 +%%WWWDIR%%/xlogin.php
 +%%WWWDIR%%/xsettings.php
 +@dir %%WWWDIR%%/web
-+@dir %%WWWDIR%%/themes/ocean_surf/templates/settings
-+@dir %%WWWDIR%%/themes/ocean_surf/templates
-+@dir %%WWWDIR%%/themes/ocean_surf/javascript
-+@dir %%WWWDIR%%/themes/ocean_surf/images
-+@dir %%WWWDIR%%/themes/ocean_surf/css/images
-+@dir %%WWWDIR%%/themes/ocean_surf/css
-+@dir %%WWWDIR%%/themes/ocean_surf/compiled
-+@dir %%WWWDIR%%/themes/ocean_surf/code
++@dir %%WWWDIR%%/admin
++@dir %%WWWDIR%%/themes
 +@dir %%WWWDIR%%/themes/ocean_surf
-+@dir %%WWWDIR%%/themes/dgm/templates
-+@dir %%WWWDIR%%/themes/dgm/images
-+@dir %%WWWDIR%%/themes/dgm/css
-+@dir %%WWWDIR%%/themes/dgm/compiled
-+@dir %%WWWDIR%%/themes/dgm/code
-+@dir %%WWWDIR%%/themes/dgm
++@dir %%WWWDIR%%/themes/ocean_surf/images
++@dir %%WWWDIR%%/themes/ocean_surf/templates
++@dir %%WWWDIR%%/themes/ocean_surf/templates/settings
++@dir %%WWWDIR%%/themes/ocean_surf/css
++@dir %%WWWDIR%%/themes/ocean_surf/css/images
++@dir %%WWWDIR%%/themes/ocean_surf/javascript
++@dir %%WWWDIR%%/themes/ocean_surf/code
++@dir %%WWWDIR%%/themes/desert_sand
++@dir %%WWWDIR%%/themes/desert_sand/images
++@dir %%WWWDIR%%/themes/desert_sand/css
++@dir %%WWWDIR%%/themes/desert_sand/css/images
++@dir %%WWWDIR%%/themes/desert_sand/javascript
++@dir %%WWWDIR%%/themes/desert_sand/templates
 +@dir %%WWWDIR%%/themes/desert_sand/templates/welcome
 +@dir %%WWWDIR%%/themes/desert_sand/templates/settings
-+@dir %%WWWDIR%%/themes/desert_sand/templates
-+@dir %%WWWDIR%%/themes/desert_sand/javascript
-+@dir %%WWWDIR%%/themes/desert_sand/images
-+@dir %%WWWDIR%%/themes/desert_sand/css/images
-+@dir %%WWWDIR%%/themes/desert_sand/css
-+@dir %%WWWDIR%%/themes/desert_sand/compiled
 +@dir %%WWWDIR%%/themes/desert_sand/code
-+@dir %%WWWDIR%%/themes/desert_sand
-+@dir %%WWWDIR%%/themes
-+@dir %%WWWDIR%%/overlib/mini
-+@dir %%WWWDIR%%/overlib
-+@dir %%WWWDIR%%/maia_db
-+@dir %%WWWDIR%%/locale/sv
-+@dir %%WWWDIR%%/locale/ru
-+@dir %%WWWDIR%%/locale/pt
-+@dir %%WWWDIR%%/locale/no
++@dir %%WWWDIR%%/themes/dgm
++@dir %%WWWDIR%%/themes/dgm/code
++@dir %%WWWDIR%%/themes/dgm/images
++@dir %%WWWDIR%%/themes/dgm/templates
++@dir %%WWWDIR%%/themes/dgm/css
++@dir %%WWWDIR%%/locale
 +@dir %%WWWDIR%%/locale/nl
-+@dir %%WWWDIR%%/locale/it
-+@dir %%WWWDIR%%/locale/hu
-+@dir %%WWWDIR%%/locale/fr
 +@dir %%WWWDIR%%/locale/en
-+@dir %%WWWDIR%%/locale/de
-+@dir %%WWWDIR%%/locale/da
++@dir %%WWWDIR%%/locale/fr
 +@dir %%WWWDIR%%/locale/cs
-+@dir %%WWWDIR%%/libs/jquery/images
-+@dir %%WWWDIR%%/libs/jquery
++@dir %%WWWDIR%%/locale/no
++@dir %%WWWDIR%%/locale/hu
++@dir %%WWWDIR%%/locale/da
++@dir %%WWWDIR%%/locale/it
++@dir %%WWWDIR%%/locale/ru
++@dir %%WWWDIR%%/locale/sv
++@dir %%WWWDIR%%/locale/pt
++@dir %%WWWDIR%%/locale/ja
++@dir %%WWWDIR%%/locale/de
 +@dir %%WWWDIR%%/libs
++@dir %%WWWDIR%%/libs/jquery
++@dir %%WWWDIR%%/libs/jquery/images
++@dir %%WWWDIR%%/web
 +@dir %%WWWDIR%%/images
-+@dir %%WWWDIR%%/admin
-+@dir %%WWWDIR%%
-+@owner
-+@group
++@dir %%WWWDIR%%/overlib
++@dir %%WWWDIR%%/overlib/mini
++@dir %%WWWDIR%%/maia_db
