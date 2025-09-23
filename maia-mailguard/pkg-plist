@@ -6,7 +6,7 @@
 @sample %%ETCDIR%%/templates/newuser.tpl.dist %%ETCDIR%%/templates/newuser.tpl
 @sample %%ETCDIR%%/templates/reminder.tpl.dist %%ETCDIR%%/templates/reminder.tpl
 etc/rc.d/maiad
-sbin/maiad
+%%LOCALBASE%%/sbin/maiad
 %%PORTDOCS%%%%DOCSDIR%%/LICENSE.txt
 %%PORTDOCS%%%%DOCSDIR%%/README.md
 %%PORTDOCS%%%%DOCSDIR%%/maia-mysql.sql
@@ -78,7 +78,6 @@ sbin/maiad
 %%WWWDIR%%/images/white-black-list.png
 %%WWWDIR%%/index.php
 %%WWWDIR%%/internal-init.php
-%%WWWDIR%%/libs/Smarty
 %%WWWDIR%%/libs/jquery/images/arrowdown.gif
 %%WWWDIR%%/libs/jquery/images/arrowleft.gif
 %%WWWDIR%%/libs/jquery/images/arrowright.gif
@@ -976,7 +975,6 @@ sbin/maiad
 @dir %%WWWDIR%%/libs
 @dir %%WWWDIR%%/libs/jquery
 @dir %%WWWDIR%%/libs/jquery/images
-@dir %%WWWDIR%%/web
 @dir %%WWWDIR%%/images
 @dir %%WWWDIR%%/overlib
 @dir %%WWWDIR%%/overlib/mini
