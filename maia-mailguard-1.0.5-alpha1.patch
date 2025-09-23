@@ -1,3 +1,15 @@
+diff --git a/security/Makefile b/security/Makefile
+index 9446ec4e5..be2b1e780 100644
+--- a/security/Makefile
++++ b/security/Makefile
+@@ -377,6 +377,7 @@
+     SUBDIR += lxqt-sudo
+     SUBDIR += lynis
+     SUBDIR += mac-robber
++    SUBDIR += maia-mailguard
+     SUBDIR += mailzu
+     SUBDIR += makepasswd
+     SUBDIR += maltrail
 diff --git a/security/maia-mailguard/Makefile b/security/maia-mailguard/Makefile
 new file mode 100644
 index 000000000..3d4b3f0e2
