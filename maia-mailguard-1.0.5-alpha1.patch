@@ -481,160 +481,160 @@ index 000000000..f32166c7e
 + #   \&ask_daemon, ["CONTSCAN {}\n", "localhost:3310"],
 +    qr/\bOK$/m, qr/\bFOUND$/m,
 +    qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
-diff --git a/security/maia-mailguard/files/patch-files_maiad b/security/maia-mailguard/files/patch-files_maiad
-new file mode 100644
-index 000000000..13d7f9e87
---- /dev/null
-+++ b/security/maia-mailguard/files/patch-files_maiad
-@@ -0,0 +1,8 @@
-+--- files/maiad.orig	2025-09-22 20:17:57 UTC
-++++ files/maiad
-+@@ -1,4 +1,4 @@
-+-#!/usr/bin/perl -T
-++#!/usr/bin/env perl -T
-+ 
-+ # This is maiad, a derivative of amavisd-new that has been modified to
-+ # include support for Maia Mailguard.  Maia Mailguard is a set of PHP and
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_configtest.pl b/security/maia-mailguard/files/patch-maia__scripts_configtest.pl
 new file mode 100644
-index 000000000..d91c7ad41
+index 000000000..fe11b2963
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_configtest.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/configtest.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/configtest.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/configtest.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl
 + 
 + # $Id: configtest.pl 1570 2011-07-01 19:09:55Z rjl $
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_detectvba.pl b/security/maia-mailguard/files/patch-maia__scripts_detectvba.pl
 new file mode 100644
-index 000000000..4c39a2b5f
+index 000000000..fff619d6e
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_detectvba.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/detectvba.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/detectvba.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/detectvba.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl -w
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl -w
 + #technion@lolware.net
 + #Detects vba macros containing blacklisted strings.
 + #
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_expire-quarantine-cache.pl b/security/maia-mailguard/files/patch-maia__scripts_expire-quarantine-cache.pl
 new file mode 100644
-index 000000000..d961be6ea
+index 000000000..0d34a8694
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_expire-quarantine-cache.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/expire-quarantine-cache.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/expire-quarantine-cache.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/expire-quarantine-cache.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl
 + 
 + # $Id: expire-quarantine-cache.pl 1528 2011-05-31 10:09:15Z rjl $
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_load-sa-rules.pl b/security/maia-mailguard/files/patch-maia__scripts_load-sa-rules.pl
 new file mode 100644
-index 000000000..5d0c66794
+index 000000000..9905c810c
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_load-sa-rules.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/load-sa-rules.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/load-sa-rules.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/load-sa-rules.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl
 + 
 + # $Id: load-sa-rules.pl 1528 2011-05-31 10:09:15Z rjl $
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_maiadbtool.pl b/security/maia-mailguard/files/patch-maia__scripts_maiadbtool.pl
 new file mode 100644
-index 000000000..252895372
+index 000000000..ce9d35d67
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_maiadbtool.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/maiadbtool.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/maiadbtool.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/maiadbtool.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl
 + 
 + # $Id: $
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_process-quarantine.pl b/security/maia-mailguard/files/patch-maia__scripts_process-quarantine.pl
 new file mode 100644
-index 000000000..19c5a3f53
+index 000000000..880723c9a
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_process-quarantine.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/process-quarantine.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/process-quarantine.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/process-quarantine.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl -w
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl -w
 + 
 + package Maia::ProcessQuarantine;
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_resend.pl b/security/maia-mailguard/files/patch-maia__scripts_resend.pl
 new file mode 100644
-index 000000000..72868030b
+index 000000000..045637d2a
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_resend.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/resend.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/resend.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/resend.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl -w
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl -w
 + 
 + # $Id: $
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-digests.pl b/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-digests.pl
 new file mode 100644
-index 000000000..a5ad1e453
+index 000000000..a5c24abd8
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-digests.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/send-quarantine-digests.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/send-quarantine-digests.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/send-quarantine-digests.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl
 + 
 + # $Id$
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-reminders.pl b/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-reminders.pl
 new file mode 100644
-index 000000000..731cd01a5
+index 000000000..d3b28a047
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_send-quarantine-reminders.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/send-quarantine-reminders.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/send-quarantine-reminders.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/send-quarantine-reminders.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl
 + 
 + # $Id: send-quarantine-reminders.pl 1528 2011-05-31 10:09:15Z rjl $
 + 
 diff --git a/security/maia-mailguard/files/patch-maia__scripts_stats-snapshot.pl b/security/maia-mailguard/files/patch-maia__scripts_stats-snapshot.pl
 new file mode 100644
-index 000000000..43c37c830
+index 000000000..af69c4c1b
 --- /dev/null
 +++ b/security/maia-mailguard/files/patch-maia__scripts_stats-snapshot.pl
 @@ -0,0 +1,8 @@
-+--- maia_scripts/stats-snapshot.pl.orig	2025-09-22 18:19:03 UTC
++--- maia_scripts/stats-snapshot.pl.orig	2025-09-23 19:06:16 UTC
 ++++ maia_scripts/stats-snapshot.pl
 +@@ -1,4 +1,4 @@
 +-#!/usr/bin/perl
-++#!/usr/bin/env perl
+++#!/usr/local/bin/perl
 + 
 + # $Id: stats-snapshot.pl 1528 2011-05-31 10:09:15Z rjl $
 + 
+diff --git a/security/maia-mailguard/files/patch-scripts_inline-edit.sh b/security/maia-mailguard/files/patch-scripts_inline-edit.sh
+new file mode 100644
+index 000000000..dc2833c60
+--- /dev/null
++++ b/security/maia-mailguard/files/patch-scripts_inline-edit.sh
+@@ -0,0 +1,8 @@
++--- scripts/inline-edit.sh.orig	2025-09-23 19:11:01 UTC
+++++ scripts/inline-edit.sh
++@@ -1,4 +1,4 @@
++-#/bin/bash
+++#/usr/bin/env bash
++ 
++ old_str=$1
++ new_str=$2
 diff --git a/security/maia-mailguard/files/pkg-message.in b/security/maia-mailguard/files/pkg-message.in
 new file mode 100644
 index 000000000..6fd768989

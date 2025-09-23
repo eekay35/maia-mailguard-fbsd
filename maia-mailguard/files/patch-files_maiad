@@ -1,8 +1,0 @@
---- files/maiad.orig	2025-09-22 20:17:57 UTC
-+++ files/maiad
-@@ -1,4 +1,4 @@
--#!/usr/bin/perl -T
-+#!/usr/bin/env perl -T
- 
- # This is maiad, a derivative of amavisd-new that has been modified to
- # include support for Maia Mailguard.  Maia Mailguard is a set of PHP and
