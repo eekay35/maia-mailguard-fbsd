@@ -1,5 +1,5 @@
 PORTNAME=	maia-mailguard
-DISTVERSION=	1.0.5-alpha1
+DISTVERSION=	1.0.5-alpha3
 CATEGORIES=	security
 
 MAINTAINER=	ek@purplehat.org
@@ -28,11 +28,19 @@ USES=		perl5 shebangfix
 USE_GITHUB=	yes
 GH_ACCOUNT=	einheit
 GH_PROJECT=	maia_mailguard_1.05
+GH_TAGNAME=	alpha3
 
 USE_PERL5=	run
 USE_RC_SUBR+=	maiad
 
-SHEBANG_FILES=	files/maiad
+SHEBANG_FILES=	files/maiad maia_scripts/configtest.pl \
+		maia_scripts/detectvba.pl \
+		maia_scripts/expire-quarantine-cache.pl \
+		maia_scripts/load-sa-rules.pl maia_scripts/maiadbtool.pl \
+		maia_scripts/process-quarantine.pl maia_scripts/resend.pl \
+		maia_scripts/send-quarantine-digests.pl \
+		maia_scripts/send-quarantine-reminders.pl \
+		maia_scripts/stats-snapshot.pl scripts/inline-edit.sh
 
 NO_ARCH=	yes
 NO_BUILD=	yes
@@ -101,30 +109,63 @@ UNZOO_DESC=		ZOO support with archivers/unzoo
 WEBHOST_DESC=		PHP, PEAR, etc... for Maia web interface
 ZOO_DESC=		ZOO support with archivers/zoo
 
+APACHE_USES=			apache:run
+ARC_RUN_DEPENDS+=		arc:archivers/arc
+ARJ_RUN_DEPENDS+=		arj:archivers/arj
+BDB_RUN_DEPENDS+=		p5-BerkeleyDB>=0:databases/p5-BerkeleyDB
+CAB_RUN_DEPENDS+=		cabextract:archivers/cabextract
+CLAMAV_RUN_DEPENDS+=		clamd:security/clamav
+CRYPT_RUN_DEPENDS+=		p5-Crypt-Blowfish>=0:security/p5-Crypt-Blowfish \
+				p5-Crypt-CBC>=0:security/p5-Crypt-CBC \
+				p5-Crypt-OpenSSL-RSA>=0:security/p5-Crypt-OpenSSL-RSA
+DKIM_RUN_DEPENDS+=		p5-Mail-DKIM>=0:mail/p5-Mail-DKIM
+DOMAINKEYS_RUN_DEPENDS+=	p5-Mail-DomainKeys>=0:mail/p5-Mail-DomainKeys
+DOVECOT2_RUN_DEPENDS+=		dovecot:mail/dovecot
+FILE_RUN_DEPENDS+=		file>=4.21:sysutils/file
+IPCOUNTRY_RUN_DEPENDS+=		p5-IP-Country>=0:net/p5-IP-Country
+LHA_RUN_DEPENDS+=		lha:archivers/lha
+LIGHTTPD_RUN_DEPENDS+=		lighttpd:www/lighttpd
+LZOP_RUN_DEPENDS+=		lzop:archivers/lzop
+NGINX_RUN_DEPENDS+=		nginx:www/nginx
+NOMARCH_RUN_DEPENDS+=		nomarch:archivers/nomarch
+PFA_RUN_DEPENDS+=		postfixadmin-${PHP_FLAVOR}>=0:mail/postfixadmin
+PFA_USES=			php
+PGSQL_RUN_DEPENDS+=		p5-DBD-Pg>=0:databases/p5-DBD-Pg
+PGSQL_USES=			pgsql
+POSTFIX_RUN_DEPENDS+=		postfix:mail/postfix
+RAR_RUN_DEPENDS+=		rar:archivers/rar
+RPM_RUN_DEPENDS+=		rpm2cpio.pl:archivers/rpm2cpio
+SPAMASSASSIN_RUN_DEPENDS+=	spamassassin>=0:mail/spamassassin
+SPF_RUN_DEPENDS+=		p5-Mail-SPF>=0:mail/p5-Mail-SPF
+TNEF_RUN_DEPENDS+=		tnef:converters/tnef
+UNARJ_RUN_DEPENDS+=		unarj:archivers/unarj
+UNRAR_RUN_DEPENDS+=		unrar:archivers/unrar
+UNZOO_RUN_DEPENDS+=		unzoo>=4.4_1:archivers/unzoo
+WEBHOST_RUN_DEPENDS+=		${LOCALBASE}/lib/php/${PHP_EXT_DIR}/scrypt.so:security/pecl-scrypt@${PHP_FLAVOR} \
+				${LOCALBASE}/share/smarty3-${PHP_FLAVOR}/Smarty.class.php:www/smarty3@${PHP_FLAVOR} \
+				${PEAR_DIR}/Auth/SASL.php:security/pear-Auth_SASL@${PHP_FLAVOR} \
+				${PEAR_DIR}/DB.php:databases/pear-DB@${PHP_FLAVOR} \
+				${PEAR_DIR}/Image/Canvas.php:graphics/pear-Image_Canvas@${PHP_FLAVOR} \
+				${PEAR_DIR}/Image/Color.php:graphics/pear-Image_Color@${PHP_FLAVOR} \
+				${PEAR_DIR}/Image/Graph.php:graphics/pear-Image_Graph@${PHP_FLAVOR} \
+				${PEAR_DIR}/Log.php:sysutils/pear-Log@${PHP_FLAVOR} \
+				${PEAR_DIR}/Mail/mime.php:mail/pear-Mail_Mime@${PHP_FLAVOR} \
+				${PEAR_DIR}/Mail/mimeDecode.php:mail/pear-Mail_mimeDecode@${PHP_FLAVOR} \
+				${PEAR_DIR}/Net/IMAP.php:mail/pear-Net_IMAP@${PHP_FLAVOR} \
+				${PEAR_DIR}/Net/POP3.php:net/pear-Net_POP3@${PHP_FLAVOR} \
+				${PEAR_DIR}/Net/SMTP.php:net/pear-Net_SMTP@${PHP_FLAVOR} \
+				${PEAR_DIR}/Net/Socket.php:net/pear-Net_Socket@${PHP_FLAVOR} \
+				${PEAR_DIR}/Numbers/Roman.php:textproc/pear-Numbers_Roman@${PHP_FLAVOR} \
+				${PEAR_DIR}/Numbers/Words.php:textproc/pear-Numbers_Words@${PHP_FLAVOR} \
+				${PEAR_DIR}/Pager/Pager.php:devel/pear-Pager@${PHP_FLAVOR}
+WEBHOST_USES=			php
+WEBHOST_USE=			pdo_sqlite,posix,session,simplexml,sockets,sqlite3,tokenizer, \
+				PHP=,bcmath,ctype,dom,gettext,iconv,imap,mbstring,mcrypt,pdo \
+				xml,xmlreader,xmlrpc,xmlwriter
+ZOO_RUN_DEPENDS+=		zoo>=2.10.1_2:archivers/zoo
+
 .include <bsd.port.options.mk>
 
-APACHE_USES=	apache:run
-WEBHOST_USES=	php
-WEBHOST_USE=	pdo_sqlite,posix,session,simplexml,sockets,sqlite3,tokenizer, \
-		PHP=,bcmath,ctype,dom,gettext,iconv,imap,mbstring,mcrypt,pdo \
-		xml,xmlreader,xmlrpc,xmlwriter
-WEBHOST_RUN_DEPENDS+=	${LOCALBASE}/lib/php/${PHP_EXT_DIR}/scrypt.so:security/pecl-scrypt@${PHP_FLAVOR} \
-			${LOCALBASE}/share/smarty3-${PHP_FLAVOR}/Smarty.class.php:www/smarty3@${PHP_FLAVOR} \
-			${PEAR_DIR}/Auth/SASL.php:security/pear-Auth_SASL@${PHP_FLAVOR} \
-			${PEAR_DIR}/DB.php:databases/pear-DB@${PHP_FLAVOR} \
-			${PEAR_DIR}/Image/Canvas.php:graphics/pear-Image_Canvas@${PHP_FLAVOR} \
-			${PEAR_DIR}/Image/Color.php:graphics/pear-Image_Color@${PHP_FLAVOR} \
-			${PEAR_DIR}/Image/Graph.php:graphics/pear-Image_Graph@${PHP_FLAVOR} \
-			${PEAR_DIR}/Log.php:sysutils/pear-Log@${PHP_FLAVOR} \
-			${PEAR_DIR}/Mail/mime.php:mail/pear-Mail_Mime@${PHP_FLAVOR} \
-			${PEAR_DIR}/Mail/mimeDecode.php:mail/pear-Mail_mimeDecode@${PHP_FLAVOR} \
-			${PEAR_DIR}/Net/IMAP.php:mail/pear-Net_IMAP@${PHP_FLAVOR} \
-			${PEAR_DIR}/Net/POP3.php:net/pear-Net_POP3@${PHP_FLAVOR} \
-			${PEAR_DIR}/Net/SMTP.php:net/pear-Net_SMTP@${PHP_FLAVOR} \
-			${PEAR_DIR}/Net/Socket.php:net/pear-Net_Socket@${PHP_FLAVOR} \
-			${PEAR_DIR}/Numbers/Roman.php:textproc/pear-Numbers_Roman@${PHP_FLAVOR} \
-			${PEAR_DIR}/Numbers/Words.php:textproc/pear-Numbers_Words@${PHP_FLAVOR} \
-			${PEAR_DIR}/Pager/Pager.php:devel/pear-Pager@${PHP_FLAVOR}
 .if ${PORT_OPTIONS:MMYSQL} && ${PORT_OPTIONS:MLOCAL}
 USES+=		mysql:server,client
 RUN_DEPENDS+=	${DBD_MYSQL}
@@ -137,46 +178,11 @@ RUN_DEPENDS+=	${DBD_MYSQL}
 USE_PHP+=	mysqli
 .endif
 .if ${PORT_OPTIONS:MPGSQL} && ${PORT_OPTIONS:MLOCAL}
-USES+=		pgsql
 WANT_PGSQL=	server
-RUN_DEPENDS+=	p5-DBD-Pg>=0:databases/p5-DBD-Pg
-.endif
-.if ${PORT_OPTIONS:MPGSQL} && !${PORT_OPTIONS:MLOCAL}
-USES+=		pgsql
-RUN_DEPENDS+=	p5-DBD-Pg>=0:databases/p5-DBD-Pg
 .endif
 .if ${PORT_OPTIONS:MPGSQL} && ${PORT_OPTIONS:MWEBHOST}
 USE_PHP+=	pgsql
 .endif
-LIGHTTPD_RUN_DEPENDS=		lighttpd:www/lighttpd
-DOVECOT2_RUN_DEPENDS=		dovecot:mail/dovecot
-POSTFIX_RUN_DEPENDS=		postfix:mail/postfix
-PFA_USES=			php
-PFA_RUN_DEPENDS=		postfixadmin-${PHP_FLAVOR}>=0:mail/postfixadmin
-CLAMAV_RUN_DEPENDS=		clamd:security/clamav
-SPAMASSASSIN_RUN_DEPENDS=	spamassassin>=0:mail/spamassassin
-BDB_RUN_DEPENDS=		p5-BerkeleyDB>=0:databases/p5-BerkeleyDB
-CRYPT_RUN_DEPENDS+=		p5-Crypt-Blowfish>=0:security/p5-Crypt-Blowfish \
-				p5-Crypt-CBC>=0:security/p5-Crypt-CBC \
-				p5-Crypt-OpenSSL-RSA>=0:security/p5-Crypt-OpenSSL-RSA
-IPCOUNTRY_RUN_DEPENDS=		p5-IP-Country>=0:net/p5-IP-Country
-DOMAINKEYS_RUN_DEPENDS=		p5-Mail-DomainKeys>=0:mail/p5-Mail-DomainKeys
-SPF_RUN_DEPENDS=		p5-Mail-SPF>=0:mail/p5-Mail-SPF
-DKIM_RUN_DEPENDS=		p5-Mail-DKIM>=0:mail/p5-Mail-DKIM
-FILE_RUN_DEPENDS=		file>=4.21:sysutils/file
-RAR_RUN_DEPENDS=		rar:archivers/rar
-UNRAR_RUN_DEPENDS=		unrar:archivers/unrar
-ARJ_RUN_DEPENDS=		arj:archivers/arj
-UNARJ_RUN_DEPENDS=		unarj:archivers/unarj
-LHA_RUN_DEPENDS=		lha:archivers/lha
-ARC_RUN_DEPENDS=		arc:archivers/arc
-NOMARCH_RUN_DEPENDS=		nomarch:archivers/nomarch
-CAB_RUN_DEPENDS=		cabextract:archivers/cabextract
-RPM_RUN_DEPENDS=		rpm2cpio.pl:archivers/rpm2cpio
-ZOO_RUN_DEPENDS=		zoo>=2.10.1_2:archivers/zoo
-UNZOO_RUN_DEPENDS=		unzoo>=4.4_1:archivers/unzoo
-LZOP_RUN_DEPENDS=		lzop:archivers/lzop
-TNEF_RUN_DEPENDS=		tnef:converters/tnef
 
 .include <bsd.port.pre.mk>
 
