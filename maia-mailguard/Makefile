@@ -1,5 +1,5 @@
 PORTNAME=	maia-mailguard
-DISTVERSION=	1.0.5-alpha3
+DISTVERSION=	1.0.5-alpha4
 CATEGORIES=	security
 
 MAINTAINER=	ek@purplehat.org
@@ -28,7 +28,7 @@ USES=		perl5 shebangfix
 USE_GITHUB=	yes
 GH_ACCOUNT=	einheit
 GH_PROJECT=	maia_mailguard_1.05
-GH_TAGNAME=	alpha3
+GH_TAGNAME=	alpha4
 
 USE_PERL5=	run
 USE_RC_SUBR+=	maiad
@@ -69,7 +69,7 @@ PLIST_SUB+=	GROUPS="${GROUPS}" \
 		WWWOWN="${WWWOWN}"
 
 OPTIONS_DEFINE=	APACHE ARC ARJ BDB CAB CLAMAV CRYPT DKIM DOCS DOMAINKEYS \
-		DOVECOT2 FILE IPCOUNTRY LHA LIGHTTPD LOCAL LZOP MYSQL NGINX \
+		DOVECOT FILE IPCOUNTRY LHA LIGHTTPD LOCAL LZOP MYSQL NGINX \
 		NOMARCH PFA PGSQL POSTFIX RAR RPM SPAMASSASSIN SPF TNEF UNARJ \
 		UNRAR UNZOO WEBHOST ZOO
 
@@ -85,7 +85,7 @@ CLAMAV_DESC=		Use ClamAV anti-virus
 CRYPT_DESC=		Encryption support
 DKIM_DESC=		SpamAssassin DKIM plugin
 DOMAINKEYS_DESC=	SpamAssassin DomainKey plugin
-DOVECOT2_DESC=		Use Dovecot 2.x IMAP/POP3
+DOVECOT_DESC=		Use Dovecot IMAP/POP3
 FILE_DESC=		Use newer file(1) utility from ports
 IPCOUNTRY_DESC=		SpamAssassin IP Country plugin
 LHA_DESC=		LHA support with archivers/lha
@@ -109,7 +109,7 @@ UNZOO_DESC=		ZOO support with archivers/unzoo
 WEBHOST_DESC=		PHP, PEAR, etc... for Maia web interface
 ZOO_DESC=		ZOO support with archivers/zoo
 
-APACHE_USES=			apache:run
+APACHE_USES+=			apache:run
 ARC_RUN_DEPENDS+=		arc:archivers/arc
 ARJ_RUN_DEPENDS+=		arj:archivers/arj
 BDB_RUN_DEPENDS+=		p5-BerkeleyDB>=0:databases/p5-BerkeleyDB
@@ -120,18 +120,20 @@ CRYPT_RUN_DEPENDS+=		p5-Crypt-Blowfish>=0:security/p5-Crypt-Blowfish \
 				p5-Crypt-OpenSSL-RSA>=0:security/p5-Crypt-OpenSSL-RSA
 DKIM_RUN_DEPENDS+=		p5-Mail-DKIM>=0:mail/p5-Mail-DKIM
 DOMAINKEYS_RUN_DEPENDS+=	p5-Mail-DomainKeys>=0:mail/p5-Mail-DomainKeys
-DOVECOT2_RUN_DEPENDS+=		dovecot:mail/dovecot
+DOVECOT_RUN_DEPENDS+=		dovecot:mail/dovecot
 FILE_RUN_DEPENDS+=		file>=4.21:sysutils/file
 IPCOUNTRY_RUN_DEPENDS+=		p5-IP-Country>=0:net/p5-IP-Country
 LHA_RUN_DEPENDS+=		lha:archivers/lha
 LIGHTTPD_RUN_DEPENDS+=		lighttpd:www/lighttpd
 LZOP_RUN_DEPENDS+=		lzop:archivers/lzop
+MYSQL_RUN_DEPENDS+=		${DBD_MYSQL}
+MYSQL_USES+=		mysql:client
 NGINX_RUN_DEPENDS+=		nginx:www/nginx
 NOMARCH_RUN_DEPENDS+=		nomarch:archivers/nomarch
-PFA_RUN_DEPENDS+=		postfixadmin-${PHP_FLAVOR}>=0:mail/postfixadmin
-PFA_USES=			php
+PFA_RUN_DEPENDS+=		postfixadmin33-${PHP_FLAVOR}>=0:mail/postfixadmin33
+PFA_USES+=			php
 PGSQL_RUN_DEPENDS+=		p5-DBD-Pg>=0:databases/p5-DBD-Pg
-PGSQL_USES=			pgsql
+PGSQL_USES+=			pgsql
 POSTFIX_RUN_DEPENDS+=		postfix:mail/postfix
 RAR_RUN_DEPENDS+=		rar:archivers/rar
 RPM_RUN_DEPENDS+=		rpm2cpio.pl:archivers/rpm2cpio
@@ -158,9 +160,9 @@ WEBHOST_RUN_DEPENDS+=		${LOCALBASE}/lib/php/${PHP_EXT_DIR}/scrypt.so:security/pe
 				${PEAR_DIR}/Numbers/Roman.php:textproc/pear-Numbers_Roman@${PHP_FLAVOR} \
 				${PEAR_DIR}/Numbers/Words.php:textproc/pear-Numbers_Words@${PHP_FLAVOR} \
 				${PEAR_DIR}/Pager/Pager.php:devel/pear-Pager@${PHP_FLAVOR}
-WEBHOST_USES=			php
-WEBHOST_USE=			pdo_sqlite,posix,session,simplexml,sockets,sqlite3,tokenizer, \
-				PHP=,bcmath,ctype,dom,gettext,iconv,imap,mbstring,mcrypt,pdo \
+WEBHOST_USES+=			php
+WEBHOST_USE+=			PHP=pdo_sqlite,posix,session,simplexml,sockets,sqlite3,tokenizer, \
+				bcmath,ctype,dom,gettext,iconv,imap,mbstring,mcrypt,pdo \
 				xml,xmlreader,xmlrpc,xmlwriter
 ZOO_RUN_DEPENDS+=		zoo>=2.10.1_2:archivers/zoo
 
@@ -168,10 +170,6 @@ ZOO_RUN_DEPENDS+=		zoo>=2.10.1_2:archivers/zoo
 
 .if ${PORT_OPTIONS:MMYSQL} && ${PORT_OPTIONS:MLOCAL}
 USES+=		mysql:server,client
-RUN_DEPENDS+=	${DBD_MYSQL}
-.endif
-.if ${PORT_OPTIONS:MMYSQL} && !${PORT_OPTIONS:MLOCAL}
-USES+=		mysql:client
 RUN_DEPENDS+=	${DBD_MYSQL}
 .endif
 .if ${PORT_OPTIONS:MMYSQL} && ${PORT_OPTIONS:MWEBHOST}
