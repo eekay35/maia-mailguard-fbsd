@@ -1,5 +1,5 @@
 PORTNAME=	maia-mailguard
-DISTVERSION=	1.0.5-alpha4
+DISTVERSION=	1.0.5-beta2
 CATEGORIES=	security
 
 MAINTAINER=	ek@purplehat.org
@@ -28,7 +28,7 @@ USES=		perl5 shebangfix
 USE_GITHUB=	yes
 GH_ACCOUNT=	einheit
 GH_PROJECT=	maia_mailguard_1.05
-GH_TAGNAME=	alpha4
+GH_TAGNAME=	beta2
 
 USE_PERL5=	run
 USE_RC_SUBR+=	maiad
