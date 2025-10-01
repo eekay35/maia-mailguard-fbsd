@@ -14,7 +14,7 @@ git -C /usr/ports pull
 ```
 2. Apply the patch to the ports tree
 ```
-git -C /usr/ports apply /path/to/maia-mailguard-alpha.patch
+git -C /usr/ports apply /path/to/maia-mailguard-1.0.5.patch
 ```
 
 ## Copy the port directory
