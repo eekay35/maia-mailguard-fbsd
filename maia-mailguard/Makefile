@@ -1,5 +1,5 @@
 PORTNAME=	maia-mailguard
-DISTVERSION=	1.0.5-beta2
+DISTVERSION=	1.0.5-rc1
 CATEGORIES=	security
 
 MAINTAINER=	ek@purplehat.org
@@ -28,7 +28,7 @@ USES=		perl5 shebangfix
 USE_GITHUB=	yes
 GH_ACCOUNT=	einheit
 GH_PROJECT=	maia_mailguard_1.05
-GH_TAGNAME=	beta2
+GH_TAGNAME=	rc1
 
 USE_PERL5=	run
 USE_RC_SUBR+=	maiad
@@ -127,7 +127,7 @@ LHA_RUN_DEPENDS+=		lha:archivers/lha
 LIGHTTPD_RUN_DEPENDS+=		lighttpd:www/lighttpd
 LZOP_RUN_DEPENDS+=		lzop:archivers/lzop
 MYSQL_RUN_DEPENDS+=		${DBD_MYSQL}
-MYSQL_USES+=		mysql:client
+MYSQL_USES+=			mysql:client
 NGINX_RUN_DEPENDS+=		nginx:www/nginx
 NOMARCH_RUN_DEPENDS+=		nomarch:archivers/nomarch
 PFA_RUN_DEPENDS+=		postfixadmin33-${PHP_FLAVOR}>=0:mail/postfixadmin33
@@ -161,8 +161,8 @@ WEBHOST_RUN_DEPENDS+=		${LOCALBASE}/lib/php/${PHP_EXT_DIR}/scrypt.so:security/pe
 				${PEAR_DIR}/Numbers/Words.php:textproc/pear-Numbers_Words@${PHP_FLAVOR} \
 				${PEAR_DIR}/Pager/Pager.php:devel/pear-Pager@${PHP_FLAVOR}
 WEBHOST_USES+=			php
-WEBHOST_USE+=			PHP=pdo_sqlite,posix,session,simplexml,sockets,sqlite3,tokenizer, \
-				bcmath,ctype,dom,gettext,iconv,imap,mbstring,mcrypt,pdo \
+WEBHOST_USE+=			PHP=bcmath,ctype,dom,gettext,iconv,imap,mbstring,mcrypt,pdo, \
+				pdo_sqlite,posix,session,simplexml,sockets,sqlite3,tokenizer, \
 				xml,xmlreader,xmlrpc,xmlwriter
 ZOO_RUN_DEPENDS+=		zoo>=2.10.1_2:archivers/zoo
 

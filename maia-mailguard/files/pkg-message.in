@@ -9,17 +9,15 @@
     security/f-prot	F-Prot Antivirus
     security/drweb	DrWeb antivirus suite
 
- Enable Maia-Mailguard in /etc/rc.conf with the following line:
+ Enable Maia-Mailguard:
 
-    maiad_enable="YES"
+    # service maiad enable
 
  Configuration templates are available in %%ETCDIR%%
  as maia.conf.dist and maiad.conf.dist.
 
-
- Please note that Maia Mailguard no longer supports "mysql" but has
- moved forward to using "mysqli" instead. So, please check your
- %%WWWDIR%%/config.php file and make any appropriate changes.
+ Please check %%WWWDIR%%/config.php
+ and make any appropriate changes.
 EOM
 }
 ]
