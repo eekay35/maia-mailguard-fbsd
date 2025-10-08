@@ -18,7 +18,7 @@ git -C /usr/ports apply /path/to/maia-mailguard-1.0.5.patch
 ```
 
 ## Copy the port directory
-1. Simply copy the "maial-mailguard" directory to /usr/ports/security
+1. Simply copy the "maia-mailguard" directory to /usr/ports/security
 ```
 cp -a /path/to/maia-mailguard /usr/ports/security/
 ```
