@@ -12,12 +12,12 @@ index c49e8676f..87aafbfee 100644
      SUBDIR += maltrail
 diff --git a/security/maia-mailguard/Makefile b/security/maia-mailguard/Makefile
 new file mode 100644
-index 000000000..83faadb02
+index 000000000..1b66cb0a2
 --- /dev/null
 +++ b/security/maia-mailguard/Makefile
-@@ -0,0 +1,246 @@
+@@ -0,0 +1,247 @@
 +PORTNAME=	maia-mailguard
-+DISTVERSION=	1.0.5-rc1
++DISTVERSION=	1.0.5-rc2
 +CATEGORIES=	security
 +
 +MAINTAINER=	ek@purplehat.org
@@ -46,7 +46,7 @@ index 000000000..83faadb02
 +USE_GITHUB=	yes
 +GH_ACCOUNT=	einheit
 +GH_PROJECT=	maia_mailguard_1.05
-+GH_TAGNAME=	rc1
++GH_TAGNAME=	rc2
 +
 +USE_PERL5=	run
 +USE_RC_SUBR+=	maiad
@@ -247,6 +247,7 @@ index 000000000..83faadb02
 +	${MKDIR} ${STAGEDIR}${DATADIR}
 +	cd ${WRKSRC}/maia_scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 +	cd ${WRKSRC}/scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
++	cd ${WRKSRC}/freebsd/extras && ${COPYTREE_SHARE} freebsd-fixer.sh ${STAGEDIR}${DATADIR}/scripts
 +	${MKDIR} ${STAGEDIR}${ETCDIR}/templates
 +.for a in digest.tpl newuser.tpl reminder.tpl
 +	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a}.dist ${STAGEDIR}${ETCDIR}/templates
@@ -264,13 +265,13 @@ index 000000000..83faadb02
 +.include <bsd.port.post.mk>
 diff --git a/security/maia-mailguard/distinfo b/security/maia-mailguard/distinfo
 new file mode 100644
-index 000000000..d55936b74
+index 000000000..cd4173c72
 --- /dev/null
 +++ b/security/maia-mailguard/distinfo
 @@ -0,0 +1,3 @@
-+TIMESTAMP = 1759858858
-+SHA256 (einheit-maia_mailguard_1.05-1.0.5-rc1-rc1_GH0.tar.gz) = 181cfbfb543a5b379888bf68a0ca4a1bf03546a945aee069ca8cd38511fb0b51
-+SIZE (einheit-maia_mailguard_1.05-1.0.5-rc1-rc1_GH0.tar.gz) = 13925092
++TIMESTAMP = 1759946380
++SHA256 (einheit-maia_mailguard_1.05-1.0.5-rc2-rc2_GH0.tar.gz) = 3d0aa1ed58de99b9984fe69d4fc82829da96f38b4e61b49a8fb563a4ca11ba16
++SIZE (einheit-maia_mailguard_1.05-1.0.5-rc2-rc2_GH0.tar.gz) = 13924769
 diff --git a/security/maia-mailguard/files/maiad.in b/security/maia-mailguard/files/maiad.in
 new file mode 100644
 index 000000000..6b998b0d1
@@ -382,10 +383,10 @@ index 000000000..f32166c7e
 +    qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
 diff --git a/security/maia-mailguard/files/pkg-message.in b/security/maia-mailguard/files/pkg-message.in
 new file mode 100644
-index 000000000..caccecbe2
+index 000000000..4c1fd0fec
 --- /dev/null
 +++ b/security/maia-mailguard/files/pkg-message.in
-@@ -0,0 +1,23 @@
+@@ -0,0 +1,30 @@
 +[
 +{ type: install
 +  message: <<EOM
@@ -406,6 +407,13 @@ index 000000000..caccecbe2
 +
 + Please check %%WWWDIR%%/config.php
 + and make any appropriate changes.
++
++ !!! IMPORTANT !!!
++ Until more permanent changes are in place, you should run the
++ below freebsd-fixer.sh script to complete this install with the
++ proper packages and/or configuration(s).
++
++    %%DATADIR%%/scripts/freebsd-fixer.sh
 +EOM
 +}
 +]
@@ -422,10 +430,10 @@ index 000000000..92cb5feff
 +to configure site-wide defaults and limits.
 diff --git a/security/maia-mailguard/pkg-plist b/security/maia-mailguard/pkg-plist
 new file mode 100644
-index 000000000..645bc7f2b
+index 000000000..071e4070e
 --- /dev/null
 +++ b/security/maia-mailguard/pkg-plist
-@@ -0,0 +1,981 @@
+@@ -0,0 +1,982 @@
 +@group %%GROUPS%%
 +%%ETCDIR%%/maia.conf.dist
 +%%ETCDIR%%/maiad.conf.dist
@@ -443,6 +451,7 @@ index 000000000..645bc7f2b
 +%%DATADIR%%/scripts/configtest.pl
 +%%DATADIR%%/scripts/detectvba.pl
 +%%DATADIR%%/scripts/expire-quarantine-cache.pl
++%%DATADIR%%/scripts/freebsd-fixer.sh
 +%%DATADIR%%/scripts/get-info.sh
 +%%DATADIR%%/scripts/grants-sans-pw
 +%%DATADIR%%/scripts/grants-with-pw

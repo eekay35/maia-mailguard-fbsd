@@ -15,6 +15,7 @@ etc/rc.d/maiad
 %%DATADIR%%/scripts/configtest.pl
 %%DATADIR%%/scripts/detectvba.pl
 %%DATADIR%%/scripts/expire-quarantine-cache.pl
+%%DATADIR%%/scripts/freebsd-fixer.sh
 %%DATADIR%%/scripts/get-info.sh
 %%DATADIR%%/scripts/grants-sans-pw
 %%DATADIR%%/scripts/grants-with-pw

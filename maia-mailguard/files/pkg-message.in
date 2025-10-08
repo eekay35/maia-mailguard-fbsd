@@ -18,6 +18,13 @@
 
  Please check %%WWWDIR%%/config.php
  and make any appropriate changes.
+
+ !!! IMPORTANT !!!
+ Until more permanent changes are in place, you should run the
+ below freebsd-fixer.sh script to complete this install with the
+ proper packages and/or configuration(s).
+
+    %%DATADIR%%/scripts/freebsd-fixer.sh
 EOM
 }
 ]

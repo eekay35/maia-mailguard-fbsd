@@ -1,5 +1,5 @@
 PORTNAME=	maia-mailguard
-DISTVERSION=	1.0.5-rc1
+DISTVERSION=	1.0.5-rc2
 CATEGORIES=	security
 
 MAINTAINER=	ek@purplehat.org
@@ -28,7 +28,7 @@ USES=		perl5 shebangfix
 USE_GITHUB=	yes
 GH_ACCOUNT=	einheit
 GH_PROJECT=	maia_mailguard_1.05
-GH_TAGNAME=	rc1
+GH_TAGNAME=	rc2
 
 USE_PERL5=	run
 USE_RC_SUBR+=	maiad
@@ -229,6 +229,7 @@ do-install:
 	${MKDIR} ${STAGEDIR}${DATADIR}
 	cd ${WRKSRC}/maia_scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 	cd ${WRKSRC}/scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
+	cd ${WRKSRC}/freebsd/extras && ${COPYTREE_SHARE} freebsd-fixer.sh ${STAGEDIR}${DATADIR}/scripts
 	${MKDIR} ${STAGEDIR}${ETCDIR}/templates
 .for a in digest.tpl newuser.tpl reminder.tpl
 	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a}.dist ${STAGEDIR}${ETCDIR}/templates
