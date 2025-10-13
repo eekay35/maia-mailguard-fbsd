@@ -1,5 +1,5 @@
 PORTNAME=	maia-mailguard
-DISTVERSION=	1.0.5-rc3
+DISTVERSION=	1.0.5-rc4
 CATEGORIES=	security
 
 MAINTAINER=	ek@purplehat.org
@@ -28,7 +28,7 @@ USES=		perl5 shebangfix
 USE_GITHUB=	yes
 GH_ACCOUNT=	einheit
 GH_PROJECT=	maia_mailguard_1.05
-GH_TAGNAME=	rc3
+GH_TAGNAME=	rc4
 
 USE_PERL5=	run
 USE_RC_SUBR+=	maiad
@@ -161,9 +161,7 @@ WEBHOST_RUN_DEPENDS+=		${LOCALBASE}/lib/php/${PHP_EXT_DIR}/scrypt.so:security/pe
 				${PEAR_DIR}/Numbers/Words.php:textproc/pear-Numbers_Words@${PHP_FLAVOR} \
 				${PEAR_DIR}/Pager/Pager.php:devel/pear-Pager@${PHP_FLAVOR}
 WEBHOST_USES+=			php
-WEBHOST_USE+=			PHP=bcmath,ctype,dom,gettext,iconv,imap,mbstring,mcrypt,pdo, \
-				pdo_sqlite,posix,session,simplexml,sockets,sqlite3,tokenizer, \
-				xml,xmlreader,xmlrpc,xmlwriter
+WEBHOST_USE+=			PHP=bcmath,ctype,dom,gettext,iconv,imap,mbstring,mcrypt,pdo,pdo_mysql,pdo_sqlite,posix,session,simplexml,sockets,sqlite3,tokenizer,xml,xmlreader,xmlrpc,xmlwriter
 ZOO_RUN_DEPENDS+=		zoo>=2.10.1_2:archivers/zoo
 
 .include <bsd.port.options.mk>
