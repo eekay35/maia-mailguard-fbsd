@@ -1,8 +1,8 @@
 diff --git a/security/Makefile b/security/Makefile
-index c49e8676f..87aafbfee 100644
+index 0d8071e02..b8b38c97e 100644
 --- a/security/Makefile
 +++ b/security/Makefile
-@@ -376,6 +376,7 @@
+@@ -375,6 +375,7 @@
      SUBDIR += lxqt-sudo
      SUBDIR += lynis
      SUBDIR += mac-robber
@@ -12,12 +12,12 @@ index c49e8676f..87aafbfee 100644
      SUBDIR += maltrail
 diff --git a/security/maia-mailguard/Makefile b/security/maia-mailguard/Makefile
 new file mode 100644
-index 000000000..4547e15c2
+index 000000000..ff94cabfa
 --- /dev/null
 +++ b/security/maia-mailguard/Makefile
-@@ -0,0 +1,245 @@
+@@ -0,0 +1,194 @@
 +PORTNAME=	maia-mailguard
-+DISTVERSION=	1.0.5-rc4
++DISTVERSION=	1.0.5-rc5
 +CATEGORIES=	security
 +
 +MAINTAINER=	ek@purplehat.org
@@ -46,19 +46,10 @@ index 000000000..4547e15c2
 +USE_GITHUB=	yes
 +GH_ACCOUNT=	einheit
 +GH_PROJECT=	maia_mailguard_1.05
-+GH_TAGNAME=	rc4
++GH_TAGNAME=	rc5
 +
 +USE_PERL5=	run
 +USE_RC_SUBR+=	maiad
-+
-+SHEBANG_FILES=	files/maiad maia_scripts/configtest.pl \
-+		maia_scripts/detectvba.pl \
-+		maia_scripts/expire-quarantine-cache.pl \
-+		maia_scripts/load-sa-rules.pl maia_scripts/maiadbtool.pl \
-+		maia_scripts/process-quarantine.pl maia_scripts/resend.pl \
-+		maia_scripts/send-quarantine-digests.pl \
-+		maia_scripts/send-quarantine-reminders.pl \
-+		maia_scripts/stats-snapshot.pl scripts/inline-edit.sh
 +
 +NO_ARCH=	yes
 +NO_BUILD=	yes
@@ -66,19 +57,12 @@ index 000000000..4547e15c2
 +SUB_FILES=	maiad pkg-message
 +SUB_LIST+=	ETCDIR=${ETCDIR} \
 +		GROUPS=${GROUPS} \
-+		MAIAHOME=${MAIAHOME} \
-+		MAIAQUARANTINE=${MAIAQUARANTINE} \
 +		USERS=${USERS}
 +
-+DOCS=		LICENSE.txt README.md cfg_tpl/maiad.conf.tmpl \
-+		files/maia-mysql.sql files/maia-pgsql.sql \
-+		cfg_tpl/maia.conf.tmpl
++DOCS=		LICENSE.txt README.md files/maia-mysql.sql files/maia-pgsql.sql
 +
 +USERS=		vscan
 +GROUPS=		vscan
-+
-+MAIAHOME=		/var/maiad
-+MAIAQUARANTINE?=	/var/maiad/virusmails
 +
 +PEAR_DIR?=	${LOCALBASE}/share/pear
 +PLIST_SUB+=	GROUPS="${GROUPS}" \
@@ -200,59 +184,224 @@ index 000000000..4547e15c2
 +
 +.include <bsd.port.pre.mk>
 +
-+post-patch:
-+.for m in maia_scripts/configtest.pl maia_scripts/detectvba.pl \
-+	maia_scripts/expire-quarantine-cache.pl maia_scripts/load-sa-rules.pl \
-+	maia_scripts/maiadbtool.pl maia_scripts/process-quarantine.pl \
-+	maia_scripts/resend.pl maia_scripts/send-quarantine-digests.pl \
-+	maia_scripts/send-quarantine-reminders.pl maia_scripts/stats-snapshot.pl
-+	${REINPLACE_CMD} -e "s|/etc/maia/maia.conf|${ETCDIR}/maia.conf|" \
-+		${WRKSRC}/${m}
-+.endfor
-+
-+.for i in maia_templates/digest.tpl maia_templates/newuser.tpl \
-+	maia_templates/reminder.tpl
-+	${MV} ${WRKSRC}/${i} ${WRKSRC}/${i}.dist
-+.endfor
-+
-+	${REINPLACE_CMD} -e "s|daemon_user  = 'maia'|daemon_user  = '${USERS}'|" \
-+		-e "s|daemon_group = 'maia'|daemon_group = '${GROUPS}'|" \
-+		-e "s|/var/lib/maia|${MAIAHOME}|" \
-+		${WRKSRC}/cfg_tpl/maiad.conf.tmpl
-+
-+	${REINPLACE_CMD} -e "s|/etc/maia.conf|${ETCDIR}/maia.conf|" \
-+		-e "s|username = 'maia'|username = '${USERS}'|" \
-+		-e "s|/var/lib/maia|${DATADIR}|" \
-+		-e "s|/usr/bin/sa-learn|${PREFIX}/bin/sa-learn|" \
-+		-e "s|local_cf_dir = undef|local_cf_dir = '${PREFIX}/etc/mail/spamassassin'|" \
-+		-e "s|user_rules_dir = undef|user_rules_dir = '${MAIAHOME}/.spamassassin'|" \
-+		-e "s|template_dir = '/etc/maia/templates/'|template_dir = '${ETCDIR}/templates/'|" \
-+		${WRKSRC}/cfg_tpl/maia.conf.tmpl
-+
-+	${REINPLACE_CMD} -e "s|/etc/maia/maiad.conf|${ETCDIR}/maiad.conf|" \
-+		-e "s|/var/lib/maia|${DATADIR}|" \
-+		${WRKSRC}/files/maiad
-+
-+	${FIND} -E ${WRKSRC} \( -iregex '.*(bak|~)$$' -o -iregex '.*(git|~)$$' \
-+		-o -iregex '.*(orig|~)$$' \) -delete
-+
 +do-install:
-+	${MKDIR} ${STAGEDIR}${WWWDIR} ${STAGEDIR}${WWWDIR}/web
-+	cd ${WRKSRC}/php && ${COPYTREE_SHARE} . ${STAGEDIR}${WWWDIR}
 +.if ${PORT_OPTIONS:MWEBHOST}
++	${MKDIR} ${STAGEDIR}${WWWDIR}
++	cd ${WRKSRC}/php && ${COPYTREE_SHARE} . ${STAGEDIR}${WWWDIR}
 +	${LN} -s ${PREFIX}/share/smarty3-${PHP_FLAVOR} ${STAGEDIR}${WWWDIR}/libs/Smarty
 +.endif
-+	${MKDIR} ${STAGEDIR}${DATADIR}
-+	cd ${WRKSRC}/maia_scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
-+	cd ${WRKSRC}/scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
-+	cd ${WRKSRC}/freebsd/extras && ${COPYTREE_SHARE} freebsd-fixer.sh ${STAGEDIR}${DATADIR}/scripts
-+	${MKDIR} ${STAGEDIR}${ETCDIR}/templates
++	${MKDIR} ${STAGEDIR}${DATADIR} ${STAGEDIR}${DATADIR}/scripts \
++		${STAGEDIR}${DATADIR}/templates
++	cd ${WRKSRC}/freebsd/maia_scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
++	cd ${WRKSRC}/freebsd/scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
++	cd ${WRKSRC}/freebsd/extras && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 +.for a in digest.tpl newuser.tpl reminder.tpl
-+	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a}.dist ${STAGEDIR}${ETCDIR}/templates
++	${INSTALL} -m 644 ${WRKSRC}/freebsd/maia_templates/${a} ${STAGEDIR}${DATADIR}/templates
 +.endfor
-+	${INSTALL_SCRIPT} ${WRKSRC}/files/maiad ${STAGEDIR}${PREFIX}/sbin
-+	${INSTALL} -m 640 ${WRKSRC}/cfg_tpl/maiad.conf.tmpl ${STAGEDIR}${ETCDIR}/maiad.conf.dist
-+	${INSTALL} -m 640 ${WRKSRC}/cfg_tpl/maia.conf.tmpl ${STAGEDIR}${ETCDIR}/maia.conf.dist
++	${INSTALL_SCRIPT} ${WRKSRC}/freebsd/sbin/maiad ${STAGEDIR}${PREFIX}/sbin
++	${MKDIR} ${STAGEDIR}${ETCDIR}
++	${INSTALL} -m 640 ${WRKSRC}/freebsd/cfg_template/maiad.conf.tmpl ${STAGEDIR}${ETCDIR}/maiad.conf
++	${INSTALL} -m 640 ${WRKSRC}/freebsd/cfg_template/maia.conf.tmpl ${STAGEDIR}${ETCDIR}/maia.conf
++
++do-install-DOCS-on:
++	${MKDIR} ${STAGEDIR}${DOCSDIR}
++.for i in ${DOCS}
++	${INSTALL_DATA} ${WRKSRC}/${i} ${STAGEDIR}${DOCSDIR}
++.endfor
++
++.include <bsd.port.post.mk>
+diff --git a/security/maia-mailguard/Makefile.new b/security/maia-mailguard/Makefile.new
+new file mode 100644
+index 000000000..ff94cabfa
+--- /dev/null
++++ b/security/maia-mailguard/Makefile.new
+@@ -0,0 +1,194 @@
++PORTNAME=	maia-mailguard
++DISTVERSION=	1.0.5-rc5
++CATEGORIES=	security
++
++MAINTAINER=	ek@purplehat.org
++COMMENT=	Web-based management system based on amavisd-new and SpamAssassin
++WWW=		https://github.com/einheit/maia_mailguard_1.05
++
++LICENSE=	GPLv3
++LICENSE_FILE=	${WRKSRC}/LICENSE.txt
++
++RUN_DEPENDS=	p5-Archive-Zip>=0.10:archivers/p5-Archive-Zip \
++		p5-Convert-TNEF>=0.08:converters/p5-Convert-TNEF \
++		p5-Convert-UUlib>=1.08,1:converters/p5-Convert-UUlib \
++		p5-Data-UUID>=1.148:devel/p5-Data-UUID \
++		p5-forks>=0.34:devel/p5-forks \
++		p5-IO-Socket-INET6>=1.27:net/p5-IO-Socket-INET6 \
++		p5-IO-Stringy>=1.203:devel/p5-IO-Stringy \
++		p5-MIME-Tools>=4.116:mail/p5-MIME-Tools \
++		p5-Net-CIDR-Lite>=0.18:net/p5-Net-CIDR-Lite \
++		p5-Net-Server>=0.93:net/p5-Net-Server \
++		p5-Template-Toolkit>=2.13:www/p5-Template-Toolkit \
++		p5-Text-CSV>=1.02:textproc/p5-Text-CSV \
++		p5-Unix-Syslog>=0.94:sysutils/p5-Unix-Syslog
++
++USES=		perl5 shebangfix
++
++USE_GITHUB=	yes
++GH_ACCOUNT=	einheit
++GH_PROJECT=	maia_mailguard_1.05
++GH_TAGNAME=	rc5
++
++USE_PERL5=	run
++USE_RC_SUBR+=	maiad
++
++NO_ARCH=	yes
++NO_BUILD=	yes
++
++SUB_FILES=	maiad pkg-message
++SUB_LIST+=	ETCDIR=${ETCDIR} \
++		GROUPS=${GROUPS} \
++		USERS=${USERS}
++
++DOCS=		LICENSE.txt README.md files/maia-mysql.sql files/maia-pgsql.sql
++
++USERS=		vscan
++GROUPS=		vscan
++
++PEAR_DIR?=	${LOCALBASE}/share/pear
++PLIST_SUB+=	GROUPS="${GROUPS}" \
++		USERS="${USERS}" \
++		WWWGRP="${WWWGRP}" \
++		WWWOWN="${WWWOWN}"
++
++OPTIONS_DEFINE=	APACHE ARC ARJ BDB CAB CLAMAV CRYPT DKIM DOCS DOMAINKEYS \
++		DOVECOT FILE IPCOUNTRY LHA LIGHTTPD LOCAL LZOP MYSQL NGINX \
++		NOMARCH PFA PGSQL POSTFIX RAR RPM SPAMASSASSIN SPF TNEF UNARJ \
++		UNRAR UNZOO WEBHOST ZOO
++
++OPTIONS_DEFAULT=	ARC ARJ BDB CAB CLAMAV DKIM DOCS DOMAINKEYS FILE \
++			IPCOUNTRY LHA MYSQL RPM SPAMASSASSIN SPF UNRAR ZOO
++OPTIONS_SUB=		yes
++
++ARC_DESC=		ARC support with archivers/arc
++ARJ_DESC=		ARJ support with archivers/arj
++BDB_DESC=		Use BerkeleyDB
++CAB_DESC=		CAB support with archivers/cabextract
++CLAMAV_DESC=		Use ClamAV anti-virus
++CRYPT_DESC=		Encryption support
++DKIM_DESC=		SpamAssassin DKIM plugin
++DOMAINKEYS_DESC=	SpamAssassin DomainKey plugin
++DOVECOT_DESC=		Use Dovecot IMAP/POP3
++FILE_DESC=		Use newer file(1) utility from ports
++IPCOUNTRY_DESC=		SpamAssassin IP Country plugin
++LHA_DESC=		LHA support with archivers/lha
++LIGHTTPD_DESC=		Use LighTTPD web server
++LOCAL_DESC=		All services/databases hosted locally
++LZOP_DESC=		LZOP support with archivers/lzop
++MYSQL_DESC=		Use MySQL
++NGINX_DESC=		Use Nginx web server
++NOMARCH_DESC=		ARC support with archivers/nomarch
++PFA_DESC=		Use Postfixadmin
++PGSQL_DESC=		Use PgSQL
++POSTFIX_DESC=		Use Postfix MTA
++RAR_DESC=		RAR support with archivers/rar
++RPM_DESC=		RPM support with archivers/rpm2cpio
++SPAMASSASSIN_DESC=	Use SpamAssassin
++SPF_DESC=		SpamAssassin SPF plugin
++TNEF_DESC=		Add external tnef decoder
++UNARJ_DESC=		ARJ support with archivers/unarj
++UNRAR_DESC=		RAR support with archivers/unrar
++UNZOO_DESC=		ZOO support with archivers/unzoo
++WEBHOST_DESC=		PHP, PEAR, etc... for Maia web interface
++ZOO_DESC=		ZOO support with archivers/zoo
++
++APACHE_USES+=			apache:run
++ARC_RUN_DEPENDS+=		arc:archivers/arc
++ARJ_RUN_DEPENDS+=		arj:archivers/arj
++BDB_RUN_DEPENDS+=		p5-BerkeleyDB>=0:databases/p5-BerkeleyDB
++CAB_RUN_DEPENDS+=		cabextract:archivers/cabextract
++CLAMAV_RUN_DEPENDS+=		clamd:security/clamav
++CRYPT_RUN_DEPENDS+=		p5-Crypt-Blowfish>=0:security/p5-Crypt-Blowfish \
++				p5-Crypt-CBC>=0:security/p5-Crypt-CBC \
++				p5-Crypt-OpenSSL-RSA>=0:security/p5-Crypt-OpenSSL-RSA
++DKIM_RUN_DEPENDS+=		p5-Mail-DKIM>=0:mail/p5-Mail-DKIM
++DOMAINKEYS_RUN_DEPENDS+=	p5-Mail-DomainKeys>=0:mail/p5-Mail-DomainKeys
++DOVECOT_RUN_DEPENDS+=		dovecot:mail/dovecot
++FILE_RUN_DEPENDS+=		file>=4.21:sysutils/file
++IPCOUNTRY_RUN_DEPENDS+=		p5-IP-Country>=0:net/p5-IP-Country
++LHA_RUN_DEPENDS+=		lha:archivers/lha
++LIGHTTPD_RUN_DEPENDS+=		lighttpd:www/lighttpd
++LZOP_RUN_DEPENDS+=		lzop:archivers/lzop
++MYSQL_RUN_DEPENDS+=		${DBD_MYSQL}
++MYSQL_USES+=			mysql:client
++NGINX_RUN_DEPENDS+=		nginx:www/nginx
++NOMARCH_RUN_DEPENDS+=		nomarch:archivers/nomarch
++PFA_RUN_DEPENDS+=		postfixadmin33-${PHP_FLAVOR}>=0:mail/postfixadmin33
++PFA_USES+=			php
++PGSQL_RUN_DEPENDS+=		p5-DBD-Pg>=0:databases/p5-DBD-Pg
++PGSQL_USES+=			pgsql
++POSTFIX_RUN_DEPENDS+=		postfix:mail/postfix
++RAR_RUN_DEPENDS+=		rar:archivers/rar
++RPM_RUN_DEPENDS+=		rpm2cpio.pl:archivers/rpm2cpio
++SPAMASSASSIN_RUN_DEPENDS+=	spamassassin>=0:mail/spamassassin
++SPF_RUN_DEPENDS+=		p5-Mail-SPF>=0:mail/p5-Mail-SPF
++TNEF_RUN_DEPENDS+=		tnef:converters/tnef
++UNARJ_RUN_DEPENDS+=		unarj:archivers/unarj
++UNRAR_RUN_DEPENDS+=		unrar:archivers/unrar
++UNZOO_RUN_DEPENDS+=		unzoo>=4.4_1:archivers/unzoo
++WEBHOST_RUN_DEPENDS+=		${LOCALBASE}/lib/php/${PHP_EXT_DIR}/scrypt.so:security/pecl-scrypt@${PHP_FLAVOR} \
++				${LOCALBASE}/share/smarty3-${PHP_FLAVOR}/Smarty.class.php:www/smarty3@${PHP_FLAVOR} \
++				${PEAR_DIR}/Auth/SASL.php:security/pear-Auth_SASL@${PHP_FLAVOR} \
++				${PEAR_DIR}/DB.php:databases/pear-DB@${PHP_FLAVOR} \
++				${PEAR_DIR}/Image/Canvas.php:graphics/pear-Image_Canvas@${PHP_FLAVOR} \
++				${PEAR_DIR}/Image/Color.php:graphics/pear-Image_Color@${PHP_FLAVOR} \
++				${PEAR_DIR}/Image/Graph.php:graphics/pear-Image_Graph@${PHP_FLAVOR} \
++				${PEAR_DIR}/Log.php:sysutils/pear-Log@${PHP_FLAVOR} \
++				${PEAR_DIR}/Mail/mime.php:mail/pear-Mail_Mime@${PHP_FLAVOR} \
++				${PEAR_DIR}/Mail/mimeDecode.php:mail/pear-Mail_mimeDecode@${PHP_FLAVOR} \
++				${PEAR_DIR}/Net/IMAP.php:mail/pear-Net_IMAP@${PHP_FLAVOR} \
++				${PEAR_DIR}/Net/POP3.php:net/pear-Net_POP3@${PHP_FLAVOR} \
++				${PEAR_DIR}/Net/SMTP.php:net/pear-Net_SMTP@${PHP_FLAVOR} \
++				${PEAR_DIR}/Net/Socket.php:net/pear-Net_Socket@${PHP_FLAVOR} \
++				${PEAR_DIR}/Numbers/Roman.php:textproc/pear-Numbers_Roman@${PHP_FLAVOR} \
++				${PEAR_DIR}/Numbers/Words.php:textproc/pear-Numbers_Words@${PHP_FLAVOR} \
++				${PEAR_DIR}/Pager/Pager.php:devel/pear-Pager@${PHP_FLAVOR}
++WEBHOST_USES+=			php
++WEBHOST_USE+=			PHP=bcmath,ctype,dom,gettext,iconv,imap,mbstring,mcrypt,pdo,pdo_mysql,pdo_sqlite,posix,session,simplexml,sockets,sqlite3,tokenizer,xml,xmlreader,xmlrpc,xmlwriter
++ZOO_RUN_DEPENDS+=		zoo>=2.10.1_2:archivers/zoo
++
++.include <bsd.port.options.mk>
++
++.if ${PORT_OPTIONS:MMYSQL} && ${PORT_OPTIONS:MLOCAL}
++USES+=		mysql:server,client
++RUN_DEPENDS+=	${DBD_MYSQL}
++.endif
++.if ${PORT_OPTIONS:MMYSQL} && ${PORT_OPTIONS:MWEBHOST}
++USE_PHP+=	mysqli
++.endif
++.if ${PORT_OPTIONS:MPGSQL} && ${PORT_OPTIONS:MLOCAL}
++WANT_PGSQL=	server
++.endif
++.if ${PORT_OPTIONS:MPGSQL} && ${PORT_OPTIONS:MWEBHOST}
++USE_PHP+=	pgsql
++.endif
++
++.include <bsd.port.pre.mk>
++
++do-install:
++.if ${PORT_OPTIONS:MWEBHOST}
++	${MKDIR} ${STAGEDIR}${WWWDIR}
++	cd ${WRKSRC}/php && ${COPYTREE_SHARE} . ${STAGEDIR}${WWWDIR}
++	${LN} -s ${PREFIX}/share/smarty3-${PHP_FLAVOR} ${STAGEDIR}${WWWDIR}/libs/Smarty
++.endif
++	${MKDIR} ${STAGEDIR}${DATADIR} ${STAGEDIR}${DATADIR}/scripts \
++		${STAGEDIR}${DATADIR}/templates
++	cd ${WRKSRC}/freebsd/maia_scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
++	cd ${WRKSRC}/freebsd/scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
++	cd ${WRKSRC}/freebsd/extras && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
++.for a in digest.tpl newuser.tpl reminder.tpl
++	${INSTALL} -m 644 ${WRKSRC}/freebsd/maia_templates/${a} ${STAGEDIR}${DATADIR}/templates
++.endfor
++	${INSTALL_SCRIPT} ${WRKSRC}/freebsd/sbin/maiad ${STAGEDIR}${PREFIX}/sbin
++	${MKDIR} ${STAGEDIR}${ETCDIR}
++	${INSTALL} -m 640 ${WRKSRC}/freebsd/cfg_template/maiad.conf.tmpl ${STAGEDIR}${ETCDIR}/maiad.conf
++	${INSTALL} -m 640 ${WRKSRC}/freebsd/cfg_template/maia.conf.tmpl ${STAGEDIR}${ETCDIR}/maia.conf
 +
 +do-install-DOCS-on:
 +	${MKDIR} ${STAGEDIR}${DOCSDIR}
@@ -263,13 +412,13 @@ index 000000000..4547e15c2
 +.include <bsd.port.post.mk>
 diff --git a/security/maia-mailguard/distinfo b/security/maia-mailguard/distinfo
 new file mode 100644
-index 000000000..996b47779
+index 000000000..43c3f3d19
 --- /dev/null
 +++ b/security/maia-mailguard/distinfo
 @@ -0,0 +1,3 @@
-+TIMESTAMP = 1760330017
-+SHA256 (einheit-maia_mailguard_1.05-1.0.5-rc4-rc4_GH0.tar.gz) = b6fef63e80b9b8a3796df680110b1ed61f59b6de5d535a67a8df981f17fab478
-+SIZE (einheit-maia_mailguard_1.05-1.0.5-rc4-rc4_GH0.tar.gz) = 13942709
++TIMESTAMP = 1760474693
++SHA256 (einheit-maia_mailguard_1.05-1.0.5-rc5-rc5_GH0.tar.gz) = dc89b6ce722b883ecae8216e8d87fbe60fc088550efcdce588ef8c9e86f26d79
++SIZE (einheit-maia_mailguard_1.05-1.0.5-rc5-rc5_GH0.tar.gz) = 14069055
 diff --git a/security/maia-mailguard/files/maiad.in b/security/maia-mailguard/files/maiad.in
 new file mode 100644
 index 000000000..6b998b0d1
@@ -325,60 +474,6 @@ index 000000000..6b998b0d1
 +
 +run_rc_command "$1"
 +
-diff --git a/security/maia-mailguard/files/patch-cfg__tpl_maia.conf.tmpl b/security/maia-mailguard/files/patch-cfg__tpl_maia.conf.tmpl
-new file mode 100644
-index 000000000..feca83f30
---- /dev/null
-+++ b/security/maia-mailguard/files/patch-cfg__tpl_maia.conf.tmpl
-@@ -0,0 +1,11 @@
-+--- cfg_tpl/maia.conf.tmpl.orig	2025-09-22 17:56:11 UTC
-++++ cfg_tpl/maia.conf.tmpl
-+@@ -46,7 +46,7 @@ $preserve_case = 0;
-+ # The directory where SpamAssassin's local.cf file can be found.
-+ #$local_cf_dir = '/etc/mail/spamassassin';
-+ #$local_cf_dir = '/etc/spamassassin';
-+-$local_cf_dir = undef;  # default: let the script find it
-++$local_cf_dir = '/var/db/spamassassin';  # default: let the script find it
-+ 
-+ # The directory where SpamAssassin's core rules can be found.
-+ # If you wish to specify the directory yourself, you can use the 
-diff --git a/security/maia-mailguard/files/patch-cfg__tpl_maiad.conf.tmpl b/security/maia-mailguard/files/patch-cfg__tpl_maiad.conf.tmpl
-new file mode 100644
-index 000000000..f32166c7e
---- /dev/null
-+++ b/security/maia-mailguard/files/patch-cfg__tpl_maiad.conf.tmpl
-@@ -0,0 +1,31 @@
-+--- cfg_tpl/maiad.conf.tmpl.orig	2025-09-22 18:00:05 UTC
-++++ cfg_tpl/maiad.conf.tmpl
-+@@ -55,8 +55,8 @@ $daemon_chroot_dir = undef;
-+ # Path overrides for chrooted environments
-+ #   * Uncomment and adjust as necessary if using chroot
-+ 
-+-# $lock_file = "$daemon_chroot_dir/var/lock/maia/maiad.lock";
-+-# $pid_file = "$daemon_chroot_dir/var/run/maia/maiad.pid";
-++$lock_file = "/var/run/maia/maiad.lock";
-++$pid_file = "/var/run/maia/maiad.pid";
-+ 
-+ 
-+ ###########################################################################
-+@@ -243,7 +243,7 @@ $unarj       = ['arj', 'unarj'];
-+ $unfreeze    = ['unfreeze', 'freeze -d', 'melt', 'fcat'];
-+ $arc         = ['nomarch', 'arc'];
-+ $unarj       = ['arj', 'unarj'];
-+-#$unrar      = ['rar', 'unrar'];
-++$unrar       = ['rar', 'unrar v -c- -p- --'];
-+ $zoo         = 'zoo';
-+ $lha         = 'lha';
-+ $cpio        = ['gcpio','cpio'];
-+@@ -390,7 +390,7 @@ $banned_filename_re = new_RE(
-+ 
-+ # Clam Antivirus Daemon (clamd)
-+ ['ClamAV-clamd',
-+-   \&ask_daemon, ["CONTSCAN {}\n", "/run/clamav/clamd.ctl"],
-++   \&ask_daemon, ["CONTSCAN {}\n", "/var/run/clamav/clamd.sock"],
-+ #   \&ask_daemon, ["CONTSCAN {}\n", "localhost:3310"],
-+    qr/\bOK$/m, qr/\bFOUND$/m,
-+    qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
 diff --git a/security/maia-mailguard/files/pkg-message.in b/security/maia-mailguard/files/pkg-message.in
 new file mode 100644
 index 000000000..4c1fd0fec
@@ -428,27 +523,25 @@ index 000000000..92cb5feff
 +to configure site-wide defaults and limits.
 diff --git a/security/maia-mailguard/pkg-plist b/security/maia-mailguard/pkg-plist
 new file mode 100644
-index 000000000..071e4070e
+index 000000000..8797a3b52
 --- /dev/null
 +++ b/security/maia-mailguard/pkg-plist
-@@ -0,0 +1,982 @@
+@@ -0,0 +1,986 @@
 +@group %%GROUPS%%
-+%%ETCDIR%%/maia.conf.dist
-+%%ETCDIR%%/maiad.conf.dist
++@sample %%ETCDIR%%/maia.conf %%ETCDIR%%/maia.conf.dist
++@sample %%ETCDIR%%/maiad.conf %%ETCDIR%%/maiad.conf.dist
 +@group
-+@sample %%ETCDIR%%/templates/digest.tpl.dist %%ETCDIR%%/templates/digest.tpl
-+@sample %%ETCDIR%%/templates/newuser.tpl.dist %%ETCDIR%%/templates/newuser.tpl
-+@sample %%ETCDIR%%/templates/reminder.tpl.dist %%ETCDIR%%/templates/reminder.tpl
-+etc/rc.d/maiad
-+%%LOCALBASE%%/sbin/maiad
++sbin/maiad
 +%%PORTDOCS%%%%DOCSDIR%%/LICENSE.txt
 +%%PORTDOCS%%%%DOCSDIR%%/README.md
 +%%PORTDOCS%%%%DOCSDIR%%/maia-mysql.sql
 +%%PORTDOCS%%%%DOCSDIR%%/maia-pgsql.sql
++%%DATADIR%%/scripts/README.txt
 +@mode 755
 +%%DATADIR%%/scripts/configtest.pl
 +%%DATADIR%%/scripts/detectvba.pl
 +%%DATADIR%%/scripts/expire-quarantine-cache.pl
++%%DATADIR%%/scripts/fixup-Mail_mimeDecode.sh
 +%%DATADIR%%/scripts/freebsd-fixer.sh
 +%%DATADIR%%/scripts/get-info.sh
 +%%DATADIR%%/scripts/grants-sans-pw
@@ -464,11 +557,16 @@ index 000000000..071e4070e
 +%%DATADIR%%/scripts/send-quarantine-digests.pl
 +%%DATADIR%%/scripts/send-quarantine-reminders.pl
 +%%DATADIR%%/scripts/stats-snapshot.pl
++%%DATADIR%%/scripts/update-cfg-files.sh
 +@mode
++%%DATADIR%%/templates/digest.tpl
++%%DATADIR%%/templates/newuser.tpl
++%%DATADIR%%/templates/reminder.tpl
 +@group %%WWWGRP%%
 +@owner %%WWWOWN%%
 +%%WWWDIR%%/admin/configtest.php
 +%%WWWDIR%%/admin/dblib.php
++%%WWWDIR%%/admin/phpinfo.php
 +%%WWWDIR%%/admin/schema.php
 +%%WWWDIR%%/admindex.php
 +%%WWWDIR%%/admindomains.php
@@ -513,6 +611,7 @@ index 000000000..071e4070e
 +%%WWWDIR%%/images/white-black-list.png
 +%%WWWDIR%%/index.php
 +%%WWWDIR%%/internal-init.php
++%%WWWDIR%%/libs/Smarty
 +%%WWWDIR%%/libs/jquery/images/arrowdown.gif
 +%%WWWDIR%%/libs/jquery/images/arrowleft.gif
 +%%WWWDIR%%/libs/jquery/images/arrowright.gif
@@ -1368,49 +1467,49 @@ index 000000000..071e4070e
 +%%WWWDIR%%/ximpersonate.php
 +%%WWWDIR%%/xlogin.php
 +%%WWWDIR%%/xsettings.php
-+@dir %%WWWDIR%%/web
 +@dir %%WWWDIR%%/admin
-+@dir %%WWWDIR%%/themes
-+@dir %%WWWDIR%%/themes/ocean_surf
-+@dir %%WWWDIR%%/themes/ocean_surf/images
-+@dir %%WWWDIR%%/themes/ocean_surf/templates
-+@dir %%WWWDIR%%/themes/ocean_surf/templates/settings
-+@dir %%WWWDIR%%/themes/ocean_surf/css
-+@dir %%WWWDIR%%/themes/ocean_surf/css/images
-+@dir %%WWWDIR%%/themes/ocean_surf/javascript
-+@dir %%WWWDIR%%/themes/ocean_surf/code
-+@dir %%WWWDIR%%/themes/desert_sand
-+@dir %%WWWDIR%%/themes/desert_sand/images
-+@dir %%WWWDIR%%/themes/desert_sand/css
-+@dir %%WWWDIR%%/themes/desert_sand/css/images
-+@dir %%WWWDIR%%/themes/desert_sand/javascript
-+@dir %%WWWDIR%%/themes/desert_sand/templates
-+@dir %%WWWDIR%%/themes/desert_sand/templates/welcome
-+@dir %%WWWDIR%%/themes/desert_sand/templates/settings
-+@dir %%WWWDIR%%/themes/desert_sand/code
-+@dir %%WWWDIR%%/themes/dgm
-+@dir %%WWWDIR%%/themes/dgm/code
-+@dir %%WWWDIR%%/themes/dgm/images
-+@dir %%WWWDIR%%/themes/dgm/templates
-+@dir %%WWWDIR%%/themes/dgm/css
-+@dir %%WWWDIR%%/locale
-+@dir %%WWWDIR%%/locale/nl
-+@dir %%WWWDIR%%/locale/en
-+@dir %%WWWDIR%%/locale/fr
-+@dir %%WWWDIR%%/locale/cs
-+@dir %%WWWDIR%%/locale/no
-+@dir %%WWWDIR%%/locale/hu
-+@dir %%WWWDIR%%/locale/da
-+@dir %%WWWDIR%%/locale/it
-+@dir %%WWWDIR%%/locale/ru
-+@dir %%WWWDIR%%/locale/sv
-+@dir %%WWWDIR%%/locale/pt
-+@dir %%WWWDIR%%/locale/ja
-+@dir %%WWWDIR%%/locale/de
++@dir %%WWWDIR%%/images
 +@dir %%WWWDIR%%/libs
 +@dir %%WWWDIR%%/libs/jquery
 +@dir %%WWWDIR%%/libs/jquery/images
-+@dir %%WWWDIR%%/images
++@dir %%WWWDIR%%/locale
++@dir %%WWWDIR%%/locale/cs
++@dir %%WWWDIR%%/locale/da
++@dir %%WWWDIR%%/locale/de
++@dir %%WWWDIR%%/locale/en
++@dir %%WWWDIR%%/locale/fr
++@dir %%WWWDIR%%/locale/hu
++@dir %%WWWDIR%%/locale/it
++@dir %%WWWDIR%%/locale/ja
++@dir %%WWWDIR%%/locale/nl
++@dir %%WWWDIR%%/locale/no
++@dir %%WWWDIR%%/locale/pt
++@dir %%WWWDIR%%/locale/ru
++@dir %%WWWDIR%%/locale/sv
++@dir %%WWWDIR%%/maia_db
 +@dir %%WWWDIR%%/overlib
 +@dir %%WWWDIR%%/overlib/mini
-+@dir %%WWWDIR%%/maia_db
++@dir %%WWWDIR%%/themes
++@dir %%WWWDIR%%/themes/desert_sand
++@dir %%WWWDIR%%/themes/desert_sand/code
++@dir %%WWWDIR%%/themes/desert_sand/css
++@dir %%WWWDIR%%/themes/desert_sand/css/images
++@dir %%WWWDIR%%/themes/desert_sand/images
++@dir %%WWWDIR%%/themes/desert_sand/javascript
++@dir %%WWWDIR%%/themes/desert_sand/templates
++@dir %%WWWDIR%%/themes/desert_sand/templates/settings
++@dir %%WWWDIR%%/themes/desert_sand/templates/welcome
++@dir %%WWWDIR%%/themes/dgm
++@dir %%WWWDIR%%/themes/dgm/code
++@dir %%WWWDIR%%/themes/dgm/css
++@dir %%WWWDIR%%/themes/dgm/images
++@dir %%WWWDIR%%/themes/dgm/templates
++@dir %%WWWDIR%%/themes/ocean_surf
++@dir %%WWWDIR%%/themes/ocean_surf/code
++@dir %%WWWDIR%%/themes/ocean_surf/css
++@dir %%WWWDIR%%/themes/ocean_surf/css/images
++@dir %%WWWDIR%%/themes/ocean_surf/images
++@dir %%WWWDIR%%/themes/ocean_surf/javascript
++@dir %%WWWDIR%%/themes/ocean_surf/templates
++@dir %%WWWDIR%%/themes/ocean_surf/templates/settings
++@dir %%WWWDIR%%

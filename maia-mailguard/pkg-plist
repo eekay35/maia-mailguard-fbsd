@@ -1,20 +1,18 @@
 @group %%GROUPS%%
-%%ETCDIR%%/maia.conf.dist
-%%ETCDIR%%/maiad.conf.dist
+@sample %%ETCDIR%%/maia.conf %%ETCDIR%%/maia.conf.dist
+@sample %%ETCDIR%%/maiad.conf %%ETCDIR%%/maiad.conf.dist
 @group
-@sample %%ETCDIR%%/templates/digest.tpl.dist %%ETCDIR%%/templates/digest.tpl
-@sample %%ETCDIR%%/templates/newuser.tpl.dist %%ETCDIR%%/templates/newuser.tpl
-@sample %%ETCDIR%%/templates/reminder.tpl.dist %%ETCDIR%%/templates/reminder.tpl
-etc/rc.d/maiad
-%%LOCALBASE%%/sbin/maiad
+sbin/maiad
 %%PORTDOCS%%%%DOCSDIR%%/LICENSE.txt
 %%PORTDOCS%%%%DOCSDIR%%/README.md
 %%PORTDOCS%%%%DOCSDIR%%/maia-mysql.sql
 %%PORTDOCS%%%%DOCSDIR%%/maia-pgsql.sql
+%%DATADIR%%/scripts/README.txt
 @mode 755
 %%DATADIR%%/scripts/configtest.pl
 %%DATADIR%%/scripts/detectvba.pl
 %%DATADIR%%/scripts/expire-quarantine-cache.pl
+%%DATADIR%%/scripts/fixup-Mail_mimeDecode.sh
 %%DATADIR%%/scripts/freebsd-fixer.sh
 %%DATADIR%%/scripts/get-info.sh
 %%DATADIR%%/scripts/grants-sans-pw
@@ -30,11 +28,16 @@ etc/rc.d/maiad
 %%DATADIR%%/scripts/send-quarantine-digests.pl
 %%DATADIR%%/scripts/send-quarantine-reminders.pl
 %%DATADIR%%/scripts/stats-snapshot.pl
+%%DATADIR%%/scripts/update-cfg-files.sh
 @mode
+%%DATADIR%%/templates/digest.tpl
+%%DATADIR%%/templates/newuser.tpl
+%%DATADIR%%/templates/reminder.tpl
 @group %%WWWGRP%%
 @owner %%WWWOWN%%
 %%WWWDIR%%/admin/configtest.php
 %%WWWDIR%%/admin/dblib.php
+%%WWWDIR%%/admin/phpinfo.php
 %%WWWDIR%%/admin/schema.php
 %%WWWDIR%%/admindex.php
 %%WWWDIR%%/admindomains.php
@@ -79,6 +82,7 @@ etc/rc.d/maiad
 %%WWWDIR%%/images/white-black-list.png
 %%WWWDIR%%/index.php
 %%WWWDIR%%/internal-init.php
+%%WWWDIR%%/libs/Smarty
 %%WWWDIR%%/libs/jquery/images/arrowdown.gif
 %%WWWDIR%%/libs/jquery/images/arrowleft.gif
 %%WWWDIR%%/libs/jquery/images/arrowright.gif
@@ -934,49 +938,49 @@ etc/rc.d/maiad
 %%WWWDIR%%/ximpersonate.php
 %%WWWDIR%%/xlogin.php
 %%WWWDIR%%/xsettings.php
-@dir %%WWWDIR%%/web
 @dir %%WWWDIR%%/admin
-@dir %%WWWDIR%%/themes
-@dir %%WWWDIR%%/themes/ocean_surf
-@dir %%WWWDIR%%/themes/ocean_surf/images
-@dir %%WWWDIR%%/themes/ocean_surf/templates
-@dir %%WWWDIR%%/themes/ocean_surf/templates/settings
-@dir %%WWWDIR%%/themes/ocean_surf/css
-@dir %%WWWDIR%%/themes/ocean_surf/css/images
-@dir %%WWWDIR%%/themes/ocean_surf/javascript
-@dir %%WWWDIR%%/themes/ocean_surf/code
-@dir %%WWWDIR%%/themes/desert_sand
-@dir %%WWWDIR%%/themes/desert_sand/images
-@dir %%WWWDIR%%/themes/desert_sand/css
-@dir %%WWWDIR%%/themes/desert_sand/css/images
-@dir %%WWWDIR%%/themes/desert_sand/javascript
-@dir %%WWWDIR%%/themes/desert_sand/templates
-@dir %%WWWDIR%%/themes/desert_sand/templates/welcome
-@dir %%WWWDIR%%/themes/desert_sand/templates/settings
-@dir %%WWWDIR%%/themes/desert_sand/code
-@dir %%WWWDIR%%/themes/dgm
-@dir %%WWWDIR%%/themes/dgm/code
-@dir %%WWWDIR%%/themes/dgm/images
-@dir %%WWWDIR%%/themes/dgm/templates
-@dir %%WWWDIR%%/themes/dgm/css
-@dir %%WWWDIR%%/locale
-@dir %%WWWDIR%%/locale/nl
-@dir %%WWWDIR%%/locale/en
-@dir %%WWWDIR%%/locale/fr
-@dir %%WWWDIR%%/locale/cs
-@dir %%WWWDIR%%/locale/no
-@dir %%WWWDIR%%/locale/hu
-@dir %%WWWDIR%%/locale/da
-@dir %%WWWDIR%%/locale/it
-@dir %%WWWDIR%%/locale/ru
-@dir %%WWWDIR%%/locale/sv
-@dir %%WWWDIR%%/locale/pt
-@dir %%WWWDIR%%/locale/ja
-@dir %%WWWDIR%%/locale/de
+@dir %%WWWDIR%%/images
 @dir %%WWWDIR%%/libs
 @dir %%WWWDIR%%/libs/jquery
 @dir %%WWWDIR%%/libs/jquery/images
-@dir %%WWWDIR%%/images
+@dir %%WWWDIR%%/locale
+@dir %%WWWDIR%%/locale/cs
+@dir %%WWWDIR%%/locale/da
+@dir %%WWWDIR%%/locale/de
+@dir %%WWWDIR%%/locale/en
+@dir %%WWWDIR%%/locale/fr
+@dir %%WWWDIR%%/locale/hu
+@dir %%WWWDIR%%/locale/it
+@dir %%WWWDIR%%/locale/ja
+@dir %%WWWDIR%%/locale/nl
+@dir %%WWWDIR%%/locale/no
+@dir %%WWWDIR%%/locale/pt
+@dir %%WWWDIR%%/locale/ru
+@dir %%WWWDIR%%/locale/sv
+@dir %%WWWDIR%%/maia_db
 @dir %%WWWDIR%%/overlib
 @dir %%WWWDIR%%/overlib/mini
-@dir %%WWWDIR%%/maia_db
+@dir %%WWWDIR%%/themes
+@dir %%WWWDIR%%/themes/desert_sand
+@dir %%WWWDIR%%/themes/desert_sand/code
+@dir %%WWWDIR%%/themes/desert_sand/css
+@dir %%WWWDIR%%/themes/desert_sand/css/images
+@dir %%WWWDIR%%/themes/desert_sand/images
+@dir %%WWWDIR%%/themes/desert_sand/javascript
+@dir %%WWWDIR%%/themes/desert_sand/templates
+@dir %%WWWDIR%%/themes/desert_sand/templates/settings
+@dir %%WWWDIR%%/themes/desert_sand/templates/welcome
+@dir %%WWWDIR%%/themes/dgm
+@dir %%WWWDIR%%/themes/dgm/code
+@dir %%WWWDIR%%/themes/dgm/css
+@dir %%WWWDIR%%/themes/dgm/images
+@dir %%WWWDIR%%/themes/dgm/templates
+@dir %%WWWDIR%%/themes/ocean_surf
+@dir %%WWWDIR%%/themes/ocean_surf/code
+@dir %%WWWDIR%%/themes/ocean_surf/css
+@dir %%WWWDIR%%/themes/ocean_surf/css/images
+@dir %%WWWDIR%%/themes/ocean_surf/images
+@dir %%WWWDIR%%/themes/ocean_surf/javascript
+@dir %%WWWDIR%%/themes/ocean_surf/templates
+@dir %%WWWDIR%%/themes/ocean_surf/templates/settings
+@dir %%WWWDIR%%
