@@ -41,7 +41,8 @@ SUB_LIST+=	ETCDIR=${ETCDIR} \
 		GROUPS=${GROUPS} \
 		USERS=${USERS}
 
-DOCS=		LICENSE.txt README.md files/maia-mysql.sql files/maia-pgsql.sql
+DOCS=		LICENSE.txt README.md freebsd/files/maia-mysql.sql \
+		freebsd/files/maia-pgsql.sql
 
 USERS=		vscan
 GROUPS=		vscan

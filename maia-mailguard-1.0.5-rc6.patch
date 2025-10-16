@@ -12,10 +12,10 @@ index e3840f224..bcc91433b 100644
      SUBDIR += maltrail
 diff --git a/security/maia-mailguard/Makefile b/security/maia-mailguard/Makefile
 new file mode 100644
-index 000000000..00a81f846
+index 000000000..600eaf7e3
 --- /dev/null
 +++ b/security/maia-mailguard/Makefile
-@@ -0,0 +1,194 @@
+@@ -0,0 +1,195 @@
 +PORTNAME=	maia-mailguard
 +DISTVERSION=	1.0.5-rc6
 +CATEGORIES=	security
@@ -59,7 +59,8 @@ index 000000000..00a81f846
 +		GROUPS=${GROUPS} \
 +		USERS=${USERS}
 +
-+DOCS=		LICENSE.txt README.md files/maia-mysql.sql files/maia-pgsql.sql
++DOCS=		LICENSE.txt README.md freebsd/files/maia-mysql.sql \
++		freebsd/files/maia-pgsql.sql
 +
 +USERS=		vscan
 +GROUPS=		vscan
