@@ -1,5 +1,5 @@
 PORTNAME=	maia-mailguard
-DISTVERSION=	1.0.5-rc6
+DISTVERSION=	1.0.5-rc7
 CATEGORIES=	security
 
 MAINTAINER=	ek@purplehat.org
@@ -28,7 +28,7 @@ USES=		perl5 shebangfix
 USE_GITHUB=	yes
 GH_ACCOUNT=	einheit
 GH_PROJECT=	maia_mailguard_1.05
-GH_TAGNAME=	rc6
+GH_TAGNAME=	rc7
 
 USE_PERL5=	run
 USE_RC_SUBR+=	maiad
@@ -41,8 +41,8 @@ SUB_LIST+=	ETCDIR=${ETCDIR} \
 		GROUPS=${GROUPS} \
 		USERS=${USERS}
 
-DOCS=		LICENSE.txt README.md freebsd/files/maia-mysql.sql \
-		freebsd/files/maia-pgsql.sql
+DOCS=		LICENSE.txt README.md files/maia-mysql-freebsd.sql \
+		files/maia-pgsql.sql
 
 USERS=		vscan
 GROUPS=		vscan
@@ -169,9 +169,13 @@ USE_PHP+=	pgsql
 
 do-install:
 .if ${PORT_OPTIONS:MWEBHOST}
-	${MKDIR} ${STAGEDIR}${WWWDIR}
+	${MKDIR} ${STAGEDIR}${WWWDIR} ${STAGEDIR}${WWWDIR}/cache
 	cd ${WRKSRC}/php && ${COPYTREE_SHARE} . ${STAGEDIR}${WWWDIR}
 	${LN} -s ${PREFIX}/share/smarty3-${PHP_FLAVOR} ${STAGEDIR}${WWWDIR}/libs/Smarty
+.for m in ${WRKSRC}/themes/desert_sand ${WRKSRC}/themes/dgm \
+	${WRKSRC}/themes/ocean_surf
+	${MKDIR} ${STAGEDIR}${WWWDIR}${m}/compiled
+.endfor
 .endif
 	${MKDIR} ${STAGEDIR}${DATADIR} ${STAGEDIR}${DATADIR}/scripts \
 		${STAGEDIR}${DATADIR}/templates
@@ -179,7 +183,7 @@ do-install:
 	cd ${WRKSRC}/freebsd/scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 	cd ${WRKSRC}/freebsd/extras && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 .for a in digest.tpl newuser.tpl reminder.tpl
-	${INSTALL} -m 644 ${WRKSRC}/freebsd/maia_templates/${a} ${STAGEDIR}${DATADIR}/templates
+	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a} ${STAGEDIR}${DATADIR}/templates
 .endfor
 	${INSTALL_SCRIPT} ${WRKSRC}/freebsd/sbin/maiad ${STAGEDIR}${PREFIX}/sbin
 	${MKDIR} ${STAGEDIR}${ETCDIR}

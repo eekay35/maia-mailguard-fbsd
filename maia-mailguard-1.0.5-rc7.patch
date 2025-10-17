@@ -12,12 +12,12 @@ index e3840f224..bcc91433b 100644
      SUBDIR += maltrail
 diff --git a/security/maia-mailguard/Makefile b/security/maia-mailguard/Makefile
 new file mode 100644
-index 000000000..600eaf7e3
+index 000000000..ed3fde878
 --- /dev/null
 +++ b/security/maia-mailguard/Makefile
-@@ -0,0 +1,195 @@
+@@ -0,0 +1,199 @@
 +PORTNAME=	maia-mailguard
-+DISTVERSION=	1.0.5-rc6
++DISTVERSION=	1.0.5-rc7
 +CATEGORIES=	security
 +
 +MAINTAINER=	ek@purplehat.org
@@ -46,7 +46,7 @@ index 000000000..600eaf7e3
 +USE_GITHUB=	yes
 +GH_ACCOUNT=	einheit
 +GH_PROJECT=	maia_mailguard_1.05
-+GH_TAGNAME=	rc6
++GH_TAGNAME=	rc7
 +
 +USE_PERL5=	run
 +USE_RC_SUBR+=	maiad
@@ -59,8 +59,8 @@ index 000000000..600eaf7e3
 +		GROUPS=${GROUPS} \
 +		USERS=${USERS}
 +
-+DOCS=		LICENSE.txt README.md freebsd/files/maia-mysql.sql \
-+		freebsd/files/maia-pgsql.sql
++DOCS=		LICENSE.txt README.md files/maia-mysql-freebsd.sql \
++		files/maia-pgsql.sql
 +
 +USERS=		vscan
 +GROUPS=		vscan
@@ -187,9 +187,13 @@ index 000000000..600eaf7e3
 +
 +do-install:
 +.if ${PORT_OPTIONS:MWEBHOST}
-+	${MKDIR} ${STAGEDIR}${WWWDIR}
++	${MKDIR} ${STAGEDIR}${WWWDIR} ${STAGEDIR}${WWWDIR}/cache
 +	cd ${WRKSRC}/php && ${COPYTREE_SHARE} . ${STAGEDIR}${WWWDIR}
 +	${LN} -s ${PREFIX}/share/smarty3-${PHP_FLAVOR} ${STAGEDIR}${WWWDIR}/libs/Smarty
++.for m in ${WRKSRC}/themes/desert_sand ${WRKSRC}/themes/dgm \
++	${WRKSRC}/themes/ocean_surf
++	${MKDIR} ${STAGEDIR}${WWWDIR}${m}/compiled
++.endfor
 +.endif
 +	${MKDIR} ${STAGEDIR}${DATADIR} ${STAGEDIR}${DATADIR}/scripts \
 +		${STAGEDIR}${DATADIR}/templates
@@ -197,7 +201,7 @@ index 000000000..600eaf7e3
 +	cd ${WRKSRC}/freebsd/scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 +	cd ${WRKSRC}/freebsd/extras && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 +.for a in digest.tpl newuser.tpl reminder.tpl
-+	${INSTALL} -m 644 ${WRKSRC}/freebsd/maia_templates/${a} ${STAGEDIR}${DATADIR}/templates
++	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a} ${STAGEDIR}${DATADIR}/templates
 +.endfor
 +	${INSTALL_SCRIPT} ${WRKSRC}/freebsd/sbin/maiad ${STAGEDIR}${PREFIX}/sbin
 +	${MKDIR} ${STAGEDIR}${ETCDIR}
@@ -213,13 +217,13 @@ index 000000000..600eaf7e3
 +.include <bsd.port.post.mk>
 diff --git a/security/maia-mailguard/distinfo b/security/maia-mailguard/distinfo
 new file mode 100644
-index 000000000..cbacb65cb
+index 000000000..754ee03ca
 --- /dev/null
 +++ b/security/maia-mailguard/distinfo
 @@ -0,0 +1,3 @@
-+TIMESTAMP = 1760585020
-+SHA256 (einheit-maia_mailguard_1.05-1.0.5-rc6-rc6_GH0.tar.gz) = 51334475b646e03ede04b50f273d2e4ed15ed5061a5f370a34d35cab51222acc
-+SIZE (einheit-maia_mailguard_1.05-1.0.5-rc6-rc6_GH0.tar.gz) = 13895284
++TIMESTAMP = 1760728750
++SHA256 (einheit-maia_mailguard_1.05-1.0.5-rc7-rc7_GH0.tar.gz) = 97624b5c88abd352f260470251aa1b5c68f6c233f21d461476f6ddba00016d08
++SIZE (einheit-maia_mailguard_1.05-1.0.5-rc7-rc7_GH0.tar.gz) = 13899972
 diff --git a/security/maia-mailguard/files/maiad.in b/security/maia-mailguard/files/maiad.in
 new file mode 100644
 index 000000000..b9607952e
@@ -276,7 +280,7 @@ index 000000000..b9607952e
 +run_rc_command "$1"
 diff --git a/security/maia-mailguard/files/pkg-message.in b/security/maia-mailguard/files/pkg-message.in
 new file mode 100644
-index 000000000..4c1fd0fec
+index 000000000..54472dc78
 --- /dev/null
 +++ b/security/maia-mailguard/files/pkg-message.in
 @@ -0,0 +1,30 @@
@@ -301,7 +305,7 @@ index 000000000..4c1fd0fec
 + Please check %%WWWDIR%%/config.php
 + and make any appropriate changes.
 +
-+ !!! IMPORTANT !!!
++    !!! IMPORTANT !!!
 + Until more permanent changes are in place, you should run the
 + below freebsd-fixer.sh script to complete this install with the
 + proper packages and/or configuration(s).
@@ -323,10 +327,10 @@ index 000000000..92cb5feff
 +to configure site-wide defaults and limits.
 diff --git a/security/maia-mailguard/pkg-plist b/security/maia-mailguard/pkg-plist
 new file mode 100644
-index 000000000..8797a3b52
+index 000000000..ba77627b7
 --- /dev/null
 +++ b/security/maia-mailguard/pkg-plist
-@@ -0,0 +1,986 @@
+@@ -0,0 +1,990 @@
 +@group %%GROUPS%%
 +@sample %%ETCDIR%%/maia.conf %%ETCDIR%%/maia.conf.dist
 +@sample %%ETCDIR%%/maiad.conf %%ETCDIR%%/maiad.conf.dist
@@ -334,7 +338,7 @@ index 000000000..8797a3b52
 +sbin/maiad
 +%%PORTDOCS%%%%DOCSDIR%%/LICENSE.txt
 +%%PORTDOCS%%%%DOCSDIR%%/README.md
-+%%PORTDOCS%%%%DOCSDIR%%/maia-mysql.sql
++%%PORTDOCS%%%%DOCSDIR%%/maia-mysql-freebsd.sql
 +%%PORTDOCS%%%%DOCSDIR%%/maia-pgsql.sql
 +%%DATADIR%%/scripts/README.txt
 +@mode 755
@@ -362,8 +366,8 @@ index 000000000..8797a3b52
 +%%DATADIR%%/templates/digest.tpl
 +%%DATADIR%%/templates/newuser.tpl
 +%%DATADIR%%/templates/reminder.tpl
-+@group %%WWWGRP%%
 +@owner %%WWWOWN%%
++@group %%WWWGRP%%
 +%%WWWDIR%%/admin/configtest.php
 +%%WWWDIR%%/admin/dblib.php
 +%%WWWDIR%%/admin/phpinfo.php
@@ -1268,6 +1272,7 @@ index 000000000..8797a3b52
 +%%WWWDIR%%/xlogin.php
 +%%WWWDIR%%/xsettings.php
 +@dir %%WWWDIR%%/admin
++@dir %%WWWDIR%%/cache
 +@dir %%WWWDIR%%/images
 +@dir %%WWWDIR%%/libs
 +@dir %%WWWDIR%%/libs/jquery
@@ -1292,6 +1297,7 @@ index 000000000..8797a3b52
 +@dir %%WWWDIR%%/themes
 +@dir %%WWWDIR%%/themes/desert_sand
 +@dir %%WWWDIR%%/themes/desert_sand/code
++@dir %%WWWDIR%%/themes/desert_sand/compiled
 +@dir %%WWWDIR%%/themes/desert_sand/css
 +@dir %%WWWDIR%%/themes/desert_sand/css/images
 +@dir %%WWWDIR%%/themes/desert_sand/images
@@ -1301,11 +1307,13 @@ index 000000000..8797a3b52
 +@dir %%WWWDIR%%/themes/desert_sand/templates/welcome
 +@dir %%WWWDIR%%/themes/dgm
 +@dir %%WWWDIR%%/themes/dgm/code
++@dir %%WWWDIR%%/themes/dgm/compiled
 +@dir %%WWWDIR%%/themes/dgm/css
 +@dir %%WWWDIR%%/themes/dgm/images
 +@dir %%WWWDIR%%/themes/dgm/templates
 +@dir %%WWWDIR%%/themes/ocean_surf
 +@dir %%WWWDIR%%/themes/ocean_surf/code
++@dir %%WWWDIR%%/themes/ocean_surf/compiled
 +@dir %%WWWDIR%%/themes/ocean_surf/css
 +@dir %%WWWDIR%%/themes/ocean_surf/css/images
 +@dir %%WWWDIR%%/themes/ocean_surf/images
