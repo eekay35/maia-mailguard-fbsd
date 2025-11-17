@@ -4,45 +4,49 @@
 # REQUIRE: LOGIN
 # KEYWORD: shutdown
 #
-# Add the following lines to /etc/rc.conf to enable maiad:
-# maiad_enable (bool):		Set it to "YES" to enable maiad.
-#				Default is "NO".
-#
+# variable definitions
+#  maiad_exec_dir     Path to the actual maiad binary. Defaults to %%PREFIX%%/sbin
+#  maiad_home_dir     Path to maiad home directory. Defaults to /var/maiad
+#  maiad_pid_dir      Path to use for the pid file. Defaults to /var/run/maiad
 
 . /etc/rc.subr
 
 name=maiad
 rcvar=maiad_enable
-
 load_rc_config $name
 
 : ${maiad_enable:=NO}
-: ${maiad_pidfile="/var/run/maia/maiad.pid"}
+: ${maiad_user:="%%USERS%%"}
+: ${maiad_group:="%%GROUPS%%"}
+: ${maiad_home_dir:="/var/maiad"}
+: ${maiad_exec_dir:="%%PREFIX%%/sbin"}
+: ${maiad_pid_dir:="/var/run/maiad"}
+: ${maiad_etc_dir:="%%ETCDIR%%"}
 
-required_files=%%ETCDIR%%/maiad.conf
-
-start_cmd="%%PREFIX%%/sbin/maiad start"
-start_precmd="start_precmd"
+required_files="${maiad_etc_dir}/${name}.conf"
+start_cmd="${maiad_exec_dir}/${name} start"
+start_precmd=${name}_precmd
 extra_commands="status"
-pidfile=${maiad_pidfile}
+pidfile="${maiad_pid_dir}/${name}.pid"
 procname=maiad
 
-start_precmd()
-{
+maiad_precmd() {
+	export PATH="/sbin:/bin:/usr/sbin:/usr/bin:%%LOCALBASE%%/sbin:%%LOCALBASE%%/bin"
+
 	for i in db tmp var virusmails; do
-		if [ ! -e %%MAIAHOME%%/${i} ]; then
-			install -d -o %%USERS%% -g %%GROUPS%% -m 750 %%MAIAHOME%%/${i}
+		if [ ! -d ${maiad_home_dir}/${i} ]; then
+			install -d -o ${maiad_user} -g ${maiad_group} -m 750 ${maiad_home_dir}/${i}
 		fi
 	done
 
-	for i in log run lock; do
-		if [ ! -e /var/${i}/maia ]; then
-			install -d -o %%USERS%% -g %%GROUPS%% /var/${i}/maia
+	for i in log run; do
+		if [ ! -d /var/${i}/${name} ]; then
+			install -d -o ${maiad_user} -g ${maiad_group} /var/${i}/${name}
 		fi
 	done
 
-	# not sure why, but previous maintainer had this in the rc script
-	rm -rf %%MAIAHOME%%/tmp/* %%MAIAHOME%%/tmp/.* 2>/dev/null || true
+	rm -rf ${maiad_home_dir}/tmp/* ${maiad_home_dir}/tmp/.* 2>/dev/null || true
 }
 
 run_rc_command "$1"
+

@@ -1,0 +1,22 @@
+--- freebsd/cfg_template/maiad.conf.tmpl.orig	2025-11-13 00:11:57 UTC
++++ freebsd/cfg_template/maiad.conf.tmpl
+@@ -55,8 +55,8 @@ $daemon_chroot_dir = undef;
+ # Path overrides for chrooted environments
+ #   * Uncomment and adjust as necessary if using chroot
+ 
+-$lock_file = "/var/run/maia/maiad.lock";
+-$pid_file = "/var/run/maia/maiad.pid";
++$lock_file = "/var/run/maiad/maiad.lock";
++$pid_file = "/var/run/maiad/maiad.pid";
+ 
+ 
+ ###########################################################################
+@@ -173,7 +173,7 @@ $SYSLOG_LEVEL = 'mail.debug';
+ # Log file ($LOGFILE)
+ #   * Only used when $DO_SYSLOG is disabled
+ 
+-$LOGFILE = "/var/log/maia/maiad.log";
++$LOGFILE = "/var/log/maiad/maiad.log";
+ 
+ 
+ ###########################################################################

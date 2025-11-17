@@ -1,5 +1,5 @@
 PORTNAME=	maia-mailguard
-DISTVERSION=	1.0.5-rc7
+DISTVERSION=	1.0.5-1.0
 CATEGORIES=	security
 
 MAINTAINER=	ek@purplehat.org
@@ -28,7 +28,7 @@ USES=		perl5 shebangfix
 USE_GITHUB=	yes
 GH_ACCOUNT=	einheit
 GH_PROJECT=	maia_mailguard_1.05
-GH_TAGNAME=	rc7
+GH_TAGNAME=	1.0
 
 USE_PERL5=	run
 USE_RC_SUBR+=	maiad
@@ -37,9 +37,9 @@ NO_ARCH=	yes
 NO_BUILD=	yes
 
 SUB_FILES=	maiad pkg-message
-SUB_LIST+=	ETCDIR=${ETCDIR} \
-		GROUPS=${GROUPS} \
-		USERS=${USERS}
+SUB_LIST+=	ETCDIR="${ETCDIR}" \
+		GROUPS="${GROUPS}" \
+		USERS="${USERS}"
 
 DOCS=		LICENSE.txt README.md files/maia-mysql-freebsd.sql \
 		files/maia-pgsql.sql
@@ -167,6 +167,17 @@ USE_PHP+=	pgsql
 
 .include <bsd.port.pre.mk>
 
+post-patch:
+	(cd ${WRKSRC}/freebsd/cfg_template && ${REINPLACE_CMD} \
+		-e 's|/usr/local/etc/mail|${LOCALBASE}/etc/mail|g' \
+		-e 's|/usr/local/etc/maia-mailguard|${ETCDIR}|g' \
+		-e 's|/usr/local/share/maia-mailguard|${DATADIR}|g' \
+		-e 's|/usr/local/www/maia-mailguard|${WWWDIR}|g' \
+		maiad.conf.tmpl \
+		maia.conf.tmpl \
+		config.php.tmpl \
+	)
+
 do-install:
 .if ${PORT_OPTIONS:MWEBHOST}
 	${MKDIR} ${STAGEDIR}${WWWDIR} ${STAGEDIR}${WWWDIR}/cache
@@ -178,17 +189,17 @@ do-install:
 .endfor
 .endif
 	${MKDIR} ${STAGEDIR}${DATADIR} ${STAGEDIR}${DATADIR}/scripts \
-		${STAGEDIR}${DATADIR}/templates
+		${STAGEDIR}${WWWDIR}/templates ${STAGEDIR}${ETCDIR}
 	cd ${WRKSRC}/freebsd/maia_scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 	cd ${WRKSRC}/freebsd/scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 	cd ${WRKSRC}/freebsd/extras && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 .for a in digest.tpl newuser.tpl reminder.tpl
-	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a} ${STAGEDIR}${DATADIR}/templates
+	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a} ${STAGEDIR}${WWWDIR}/templates
 .endfor
 	${INSTALL_SCRIPT} ${WRKSRC}/freebsd/sbin/maiad ${STAGEDIR}${PREFIX}/sbin
-	${MKDIR} ${STAGEDIR}${ETCDIR}
 	${INSTALL} -m 640 ${WRKSRC}/freebsd/cfg_template/maiad.conf.tmpl ${STAGEDIR}${ETCDIR}/maiad.conf
 	${INSTALL} -m 640 ${WRKSRC}/freebsd/cfg_template/maia.conf.tmpl ${STAGEDIR}${ETCDIR}/maia.conf
+	${INSTALL} -m 640 ${WRKSRC}/freebsd/cfg_template/config.php.tmpl ${STAGEDIR}${WWWDIR}/config.php
 
 do-install-DOCS-on:
 	${MKDIR} ${STAGEDIR}${DOCSDIR}

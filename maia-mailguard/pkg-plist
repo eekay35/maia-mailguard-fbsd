@@ -30,11 +30,9 @@ sbin/maiad
 %%DATADIR%%/scripts/stats-snapshot.pl
 %%DATADIR%%/scripts/update-cfg-files.sh
 @mode
-%%DATADIR%%/templates/digest.tpl
-%%DATADIR%%/templates/newuser.tpl
-%%DATADIR%%/templates/reminder.tpl
-@owner %%WWWOWN%%
-@group %%WWWGRP%%
+%%WWWDIR%%/templates/digest.tpl
+%%WWWDIR%%/templates/newuser.tpl
+%%WWWDIR%%/templates/reminder.tpl
 %%WWWDIR%%/admin/configtest.php
 %%WWWDIR%%/admin/dblib.php
 %%WWWDIR%%/admin/phpinfo.php
@@ -939,7 +937,7 @@ sbin/maiad
 %%WWWDIR%%/xlogin.php
 %%WWWDIR%%/xsettings.php
 @dir %%WWWDIR%%/admin
-@dir %%WWWDIR%%/cache
+@dir(%%WWWOWN%%,%%WWWGRP%%,640) %%WWWDIR%%/cache
 @dir %%WWWDIR%%/images
 @dir %%WWWDIR%%/libs
 @dir %%WWWDIR%%/libs/jquery
@@ -964,7 +962,7 @@ sbin/maiad
 @dir %%WWWDIR%%/themes
 @dir %%WWWDIR%%/themes/desert_sand
 @dir %%WWWDIR%%/themes/desert_sand/code
-@dir %%WWWDIR%%/themes/desert_sand/compiled
+@dir(%%WWWOWN%%,%%WWWGRP%%,644) %%WWWDIR%%/themes/desert_sand/compiled
 @dir %%WWWDIR%%/themes/desert_sand/css
 @dir %%WWWDIR%%/themes/desert_sand/css/images
 @dir %%WWWDIR%%/themes/desert_sand/images
@@ -974,13 +972,13 @@ sbin/maiad
 @dir %%WWWDIR%%/themes/desert_sand/templates/welcome
 @dir %%WWWDIR%%/themes/dgm
 @dir %%WWWDIR%%/themes/dgm/code
-@dir %%WWWDIR%%/themes/dgm/compiled
+@dir(%%WWWOWN%%,%%WWWGRP%%,644) %%WWWDIR%%/themes/dgm/compiled
 @dir %%WWWDIR%%/themes/dgm/css
 @dir %%WWWDIR%%/themes/dgm/images
 @dir %%WWWDIR%%/themes/dgm/templates
 @dir %%WWWDIR%%/themes/ocean_surf
 @dir %%WWWDIR%%/themes/ocean_surf/code
-@dir %%WWWDIR%%/themes/ocean_surf/compiled
+@dir(%%WWWOWN%%,%%WWWGRP%%,644) %%WWWDIR%%/themes/ocean_surf/compiled
 @dir %%WWWDIR%%/themes/ocean_surf/css
 @dir %%WWWDIR%%/themes/ocean_surf/css/images
 @dir %%WWWDIR%%/themes/ocean_surf/images
