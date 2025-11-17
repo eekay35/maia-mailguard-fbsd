@@ -30,9 +30,9 @@ sbin/maiad
 %%DATADIR%%/scripts/stats-snapshot.pl
 %%DATADIR%%/scripts/update-cfg-files.sh
 @mode
-%%WWWDIR%%/templates/digest.tpl
-%%WWWDIR%%/templates/newuser.tpl
-%%WWWDIR%%/templates/reminder.tpl
+@sample %%ETCDIR%%/templates/digest.tpl %%ETCDIR%%/templates/digest.tpl.dist
+@sample %%ETCDIR%%/templates/newuser.tpl %%ETCDIR%%/templates/newuser.tpl.dist
+@sample %%ETCDIR%%/templates/reminder.tpl %%ETCDIR%%/templates/reminder.tpl.dist
 %%WWWDIR%%/admin/configtest.php
 %%WWWDIR%%/admin/dblib.php
 %%WWWDIR%%/admin/phpinfo.php

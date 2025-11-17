@@ -189,12 +189,12 @@ do-install:
 .endfor
 .endif
 	${MKDIR} ${STAGEDIR}${DATADIR} ${STAGEDIR}${DATADIR}/scripts \
-		${STAGEDIR}${WWWDIR}/templates ${STAGEDIR}${ETCDIR}
+		${STAGEDIR}${ETCDIR}/templates
 	cd ${WRKSRC}/freebsd/maia_scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 	cd ${WRKSRC}/freebsd/scripts && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 	cd ${WRKSRC}/freebsd/extras && ${COPYTREE_SHARE} . ${STAGEDIR}${DATADIR}/scripts
 .for a in digest.tpl newuser.tpl reminder.tpl
-	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a} ${STAGEDIR}${WWWDIR}/templates
+	${INSTALL} -m 644 ${WRKSRC}/maia_templates/${a} ${STAGEDIR}${ETCDIR}/templates
 .endfor
 	${INSTALL_SCRIPT} ${WRKSRC}/freebsd/sbin/maiad ${STAGEDIR}${PREFIX}/sbin
 	${INSTALL} -m 640 ${WRKSRC}/freebsd/cfg_template/maiad.conf.tmpl ${STAGEDIR}${ETCDIR}/maiad.conf
