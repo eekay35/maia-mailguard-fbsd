@@ -1,8 +1,8 @@
 diff --git a/security/Makefile b/security/Makefile
-index e7e0723847..48b9e0343d 100644
+index 67f44efbc3..5587f61c5a 100644
 --- a/security/Makefile
 +++ b/security/Makefile
-@@ -376,6 +376,7 @@
+@@ -377,6 +377,7 @@
      SUBDIR += lxqt-sudo
      SUBDIR += lynis
      SUBDIR += mac-robber
@@ -12,12 +12,12 @@ index e7e0723847..48b9e0343d 100644
      SUBDIR += maltrail
 diff --git a/security/maia-mailguard/Makefile b/security/maia-mailguard/Makefile
 new file mode 100644
-index 0000000000..7515ba53a8
+index 0000000000..3b76f37b45
 --- /dev/null
 +++ b/security/maia-mailguard/Makefile
 @@ -0,0 +1,210 @@
 +PORTNAME=	maia-mailguard
-+DISTVERSION=	1.0.5-1.0
++DISTVERSION=	1.0.5-1.2
 +CATEGORIES=	security
 +
 +MAINTAINER=	ek@purplehat.org
@@ -46,7 +46,7 @@ index 0000000000..7515ba53a8
 +USE_GITHUB=	yes
 +GH_ACCOUNT=	einheit
 +GH_PROJECT=	maia_mailguard_1.05
-+GH_TAGNAME=	1.0
++GH_TAGNAME=	1.2
 +
 +USE_PERL5=	run
 +USE_RC_SUBR+=	maiad
@@ -228,13 +228,13 @@ index 0000000000..7515ba53a8
 +.include <bsd.port.post.mk>
 diff --git a/security/maia-mailguard/distinfo b/security/maia-mailguard/distinfo
 new file mode 100644
-index 0000000000..125b5bb4df
+index 0000000000..96265e462d
 --- /dev/null
 +++ b/security/maia-mailguard/distinfo
 @@ -0,0 +1,3 @@
-+TIMESTAMP = 1763178634
-+SHA256 (einheit-maia_mailguard_1.05-1.0.5-1.0-1.0_GH0.tar.gz) = bb5f522afc34b542abd1e359a8b8adb50271911f6543ec4d9f0269bd8829709c
-+SIZE (einheit-maia_mailguard_1.05-1.0.5-1.0-1.0_GH0.tar.gz) = 16667162
++TIMESTAMP = 1765592027
++SHA256 (einheit-maia_mailguard_1.05-1.0.5-1.2-1.2_GH0.tar.gz) = 58351d70e9573a5fe5587dd372cfa346a75931fd40456b000fb1ae22c6bec009
++SIZE (einheit-maia_mailguard_1.05-1.0.5-1.2-1.2_GH0.tar.gz) = 16410801
 diff --git a/security/maia-mailguard/files/maiad.in b/security/maia-mailguard/files/maiad.in
 new file mode 100644
 index 0000000000..24a9c2671f
